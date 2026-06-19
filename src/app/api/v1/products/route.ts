@@ -1,0 +1,65 @@
+import { requireAuth, requireRole } from "@/lib/api/auth";
+import { apiData, apiError, validationError } from "@/lib/api/errors";
+import { listLimit } from "@/lib/api/ownership";
+import { createProductSchema } from "@/lib/api/schemas";
+
+export async function GET(request: Request) {
+  const auth = await requireAuth(request);
+
+  if (!auth.ok) {
+    return auth.response;
+  }
+
+  const { searchParams } = new URL(request.url);
+  const search = searchParams.get("search");
+
+  let query = auth.context.supabase
+    .from("products")
+    .select("id,name,description,sku,unit_price,is_active,created_at,updated_at")
+    .order("created_at", { ascending: false })
+    .limit(listLimit(request));
+
+  if (search) {
+    query = query.ilike("name", `%${search}%`);
+  }
+
+  const { data, error } = await query;
+
+  if (error) {
+    return apiError("bad_request", "Nao foi possivel listar produtos.", 400, error.message);
+  }
+
+  return apiData(data);
+}
+
+export async function POST(request: Request) {
+  const auth = await requireRole(request, ["admin"]);
+
+  if (!auth.ok) {
+    return auth.response;
+  }
+
+  const parsed = createProductSchema.safeParse(await request.json().catch(() => null));
+
+  if (!parsed.success) {
+    return validationError(parsed.error);
+  }
+
+  const { data, error } = await auth.context.supabase
+    .from("products")
+    .insert({
+      name: parsed.data.name,
+      description: parsed.data.description ?? null,
+      sku: parsed.data.sku ?? null,
+      unit_price: parsed.data.unit_price,
+      is_active: parsed.data.is_active,
+    })
+    .select("id,name,description,sku,unit_price,is_active,created_at,updated_at")
+    .single();
+
+  if (error) {
+    return apiError("bad_request", "Nao foi possivel criar produto.", 400, error.message);
+  }
+
+  return apiData(data, { status: 201 });
+}
