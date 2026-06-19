@@ -14,120 +14,742 @@ export type Database = {
   }
   public: {
     Tables: {
-      chat_messages: {
+      activities: {
         Row: {
-          active: boolean | null
-          bot_message: string | null
-          created_at: string | null
-          id: number
-          message_type: string | null
-          nomewpp: string | null
+          action: string
+          actor_id: string | null
+          actor_type: Database["public"]["Enums"]["activity_actor_type"]
+          created_at: string
+          entity_id: string
+          entity_type: Database["public"]["Enums"]["activity_entity_type"]
+          id: string
+          metadata: Json
+        }
+        Insert: {
+          action: string
+          actor_id?: string | null
+          actor_type: Database["public"]["Enums"]["activity_actor_type"]
+          created_at?: string
+          entity_id: string
+          entity_type: Database["public"]["Enums"]["activity_entity_type"]
+          id?: string
+          metadata?: Json
+        }
+        Update: {
+          action?: string
+          actor_id?: string | null
+          actor_type?: Database["public"]["Enums"]["activity_actor_type"]
+          created_at?: string
+          entity_id?: string
+          entity_type?: Database["public"]["Enums"]["activity_entity_type"]
+          id?: string
+          metadata?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "activities_actor_id_fkey"
+            columns: ["actor_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      audit_logs: {
+        Row: {
+          action: string
+          actor_id: string
+          after: Json | null
+          before: Json | null
+          created_at: string
+          id: string
+          target_id: string
+          target_table: string
+        }
+        Insert: {
+          action: string
+          actor_id: string
+          after?: Json | null
+          before?: Json | null
+          created_at?: string
+          id?: string
+          target_id: string
+          target_table: string
+        }
+        Update: {
+          action?: string
+          actor_id?: string
+          after?: Json | null
+          before?: Json | null
+          created_at?: string
+          id?: string
+          target_id?: string
+          target_table?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "audit_logs_actor_id_fkey"
+            columns: ["actor_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      companies: {
+        Row: {
+          created_at: string
+          deleted_at: string | null
+          document_number: string | null
+          id: string
+          name: string
+          owner_id: string
+          segment: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          deleted_at?: string | null
+          document_number?: string | null
+          id?: string
+          name: string
+          owner_id: string
+          segment?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          deleted_at?: string | null
+          document_number?: string | null
+          id?: string
+          name?: string
+          owner_id?: string
+          segment?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "companies_owner_id_fkey"
+            columns: ["owner_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      contacts: {
+        Row: {
+          company_id: string | null
+          created_at: string
+          deleted_at: string | null
+          email: string | null
+          full_name: string
+          id: string
+          owner_id: string
           phone: string | null
-          user_message: string | null
+          source: string | null
+          updated_at: string
         }
         Insert: {
-          active?: boolean | null
-          bot_message?: string | null
-          created_at?: string | null
-          id?: number
-          message_type?: string | null
-          nomewpp?: string | null
+          company_id?: string | null
+          created_at?: string
+          deleted_at?: string | null
+          email?: string | null
+          full_name: string
+          id?: string
+          owner_id: string
           phone?: string | null
-          user_message?: string | null
+          source?: string | null
+          updated_at?: string
         }
         Update: {
-          active?: boolean | null
-          bot_message?: string | null
-          created_at?: string | null
-          id?: number
-          message_type?: string | null
-          nomewpp?: string | null
+          company_id?: string | null
+          created_at?: string
+          deleted_at?: string | null
+          email?: string | null
+          full_name?: string
+          id?: string
+          owner_id?: string
           phone?: string | null
-          user_message?: string | null
+          source?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contacts_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contacts_owner_id_fkey"
+            columns: ["owner_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      deal_products: {
+        Row: {
+          created_at: string
+          deal_id: string
+          discount_amount: number
+          id: string
+          product_id: string
+          quantity: number
+          total_amount: number | null
+          unit_price: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          deal_id: string
+          discount_amount?: number
+          id?: string
+          product_id: string
+          quantity?: number
+          total_amount?: number | null
+          unit_price: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          deal_id?: string
+          discount_amount?: number
+          id?: string
+          product_id?: string
+          quantity?: number
+          total_amount?: number | null
+          unit_price?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "deal_products_deal_id_fkey"
+            columns: ["deal_id"]
+            isOneToOne: false
+            referencedRelation: "deals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "deal_products_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      deals: {
+        Row: {
+          closed_at: string | null
+          company_id: string | null
+          contact_id: string
+          created_at: string
+          deleted_at: string | null
+          expected_close_date: string | null
+          id: string
+          lost_reason: string | null
+          owner_id: string
+          pipeline_id: string
+          stage_id: string
+          status: Database["public"]["Enums"]["deal_status"]
+          title: string
+          updated_at: string
+          value: number
+        }
+        Insert: {
+          closed_at?: string | null
+          company_id?: string | null
+          contact_id: string
+          created_at?: string
+          deleted_at?: string | null
+          expected_close_date?: string | null
+          id?: string
+          lost_reason?: string | null
+          owner_id: string
+          pipeline_id: string
+          stage_id: string
+          status?: Database["public"]["Enums"]["deal_status"]
+          title: string
+          updated_at?: string
+          value?: number
+        }
+        Update: {
+          closed_at?: string | null
+          company_id?: string | null
+          contact_id?: string
+          created_at?: string
+          deleted_at?: string | null
+          expected_close_date?: string | null
+          id?: string
+          lost_reason?: string | null
+          owner_id?: string
+          pipeline_id?: string
+          stage_id?: string
+          status?: Database["public"]["Enums"]["deal_status"]
+          title?: string
+          updated_at?: string
+          value?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "deals_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "deals_contact_id_fkey"
+            columns: ["contact_id"]
+            isOneToOne: false
+            referencedRelation: "contacts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "deals_owner_id_fkey"
+            columns: ["owner_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "deals_pipeline_id_fkey"
+            columns: ["pipeline_id"]
+            isOneToOne: false
+            referencedRelation: "pipelines"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "deals_stage_in_pipeline"
+            columns: ["stage_id", "pipeline_id"]
+            isOneToOne: false
+            referencedRelation: "pipeline_stages"
+            referencedColumns: ["id", "pipeline_id"]
+          },
+        ]
+      }
+      integrations_state: {
+        Row: {
+          created_at: string
+          entity_id: string
+          entity_type: Database["public"]["Enums"]["activity_entity_type"]
+          external_id: string | null
+          id: string
+          last_synced_at: string | null
+          metadata: Json
+          provider: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          entity_id: string
+          entity_type: Database["public"]["Enums"]["activity_entity_type"]
+          external_id?: string | null
+          id?: string
+          last_synced_at?: string | null
+          metadata?: Json
+          provider: string
+          status: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          entity_id?: string
+          entity_type?: Database["public"]["Enums"]["activity_entity_type"]
+          external_id?: string | null
+          id?: string
+          last_synced_at?: string | null
+          metadata?: Json
+          provider?: string
+          status?: string
+          updated_at?: string
         }
         Relationships: []
       }
-      chats: {
+      leads: {
         Row: {
-          created_at: string | null
-          id: number
-          phone: string | null
-          updated_at: string | null
+          contact_id: string
+          converted_deal_id: string | null
+          created_at: string
+          deleted_at: string | null
+          disqualification_reason: string | null
+          id: string
+          owner_id: string
+          score: number
+          status: Database["public"]["Enums"]["lead_status"]
+          updated_at: string
         }
         Insert: {
-          created_at?: string | null
-          id?: number
-          phone?: string | null
-          updated_at?: string | null
+          contact_id: string
+          converted_deal_id?: string | null
+          created_at?: string
+          deleted_at?: string | null
+          disqualification_reason?: string | null
+          id?: string
+          owner_id: string
+          score?: number
+          status?: Database["public"]["Enums"]["lead_status"]
+          updated_at?: string
         }
         Update: {
-          created_at?: string | null
-          id?: number
-          phone?: string | null
-          updated_at?: string | null
+          contact_id?: string
+          converted_deal_id?: string | null
+          created_at?: string
+          deleted_at?: string | null
+          disqualification_reason?: string | null
+          id?: string
+          owner_id?: string
+          score?: number
+          status?: Database["public"]["Enums"]["lead_status"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "leads_contact_id_fkey"
+            columns: ["contact_id"]
+            isOneToOne: false
+            referencedRelation: "contacts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "leads_converted_deal_id_fkey"
+            columns: ["converted_deal_id"]
+            isOneToOne: false
+            referencedRelation: "deals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "leads_owner_id_fkey"
+            columns: ["owner_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pipeline_stages: {
+        Row: {
+          created_at: string
+          id: string
+          is_lost_stage: boolean
+          is_won_stage: boolean
+          name: string
+          pipeline_id: string
+          position: number
+          probability: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_lost_stage?: boolean
+          is_won_stage?: boolean
+          name: string
+          pipeline_id: string
+          position: number
+          probability?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_lost_stage?: boolean
+          is_won_stage?: boolean
+          name?: string
+          pipeline_id?: string
+          position?: number
+          probability?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pipeline_stages_pipeline_id_fkey"
+            columns: ["pipeline_id"]
+            isOneToOne: false
+            referencedRelation: "pipelines"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pipelines: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          is_active: boolean
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          updated_at?: string
         }
         Relationships: []
       }
-      dados_cliente: {
+      products: {
         Row: {
-          atendimento_ia: string | null
-          created_at: string | null
-          id: number
-          nomewpp: string | null
-          setor: string | null
-          telefone: string | null
+          created_at: string
+          description: string | null
+          id: string
+          is_active: boolean
+          name: string
+          sku: string | null
+          unit_price: number
+          updated_at: string
         }
         Insert: {
-          atendimento_ia?: string | null
-          created_at?: string | null
-          id?: number
-          nomewpp?: string | null
-          setor?: string | null
-          telefone?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+          sku?: string | null
+          unit_price?: number
+          updated_at?: string
         }
         Update: {
-          atendimento_ia?: string | null
-          created_at?: string | null
-          id?: number
-          nomewpp?: string | null
-          setor?: string | null
-          telefone?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          sku?: string | null
+          unit_price?: number
+          updated_at?: string
         }
         Relationships: []
       }
-      n8n_chat_histories: {
+      proposals: {
         Row: {
-          id: number
-          message: Json | null
-          session_id: string | null
+          approved_at: string | null
+          content: Json
+          created_at: string
+          created_by: string
+          deal_id: string
+          id: string
+          pdf_url: string | null
+          status: Database["public"]["Enums"]["proposal_status"]
+          title: string
+          total_value: number
+          updated_at: string
+          version: number
         }
         Insert: {
-          id?: number
-          message?: Json | null
-          session_id?: string | null
+          approved_at?: string | null
+          content?: Json
+          created_at?: string
+          created_by: string
+          deal_id: string
+          id?: string
+          pdf_url?: string | null
+          status?: Database["public"]["Enums"]["proposal_status"]
+          title: string
+          total_value?: number
+          updated_at?: string
+          version: number
         }
         Update: {
-          id?: number
-          message?: Json | null
-          session_id?: string | null
+          approved_at?: string | null
+          content?: Json
+          created_at?: string
+          created_by?: string
+          deal_id?: string
+          id?: string
+          pdf_url?: string | null
+          status?: Database["public"]["Enums"]["proposal_status"]
+          title?: string
+          total_value?: number
+          updated_at?: string
+          version?: number
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "proposals_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "proposals_deal_id_fkey"
+            columns: ["deal_id"]
+            isOneToOne: false
+            referencedRelation: "deals"
+            referencedColumns: ["id"]
+          },
+        ]
       }
-      n8n_chat_histories_gerente: {
+      tasks: {
         Row: {
-          id: number
-          message: Json | null
-          session_id: string | null
+          assigned_to: string
+          canceled_at: string | null
+          completed_at: string | null
+          created_at: string
+          due_at: string
+          external_calendar_event_id: string | null
+          id: string
+          related_entity_id: string
+          related_entity_type: Database["public"]["Enums"]["activity_entity_type"]
+          status: Database["public"]["Enums"]["task_status"]
+          title: string
+          type: Database["public"]["Enums"]["task_type"]
+          updated_at: string
         }
         Insert: {
-          id?: number
-          message?: Json | null
-          session_id?: string | null
+          assigned_to: string
+          canceled_at?: string | null
+          completed_at?: string | null
+          created_at?: string
+          due_at: string
+          external_calendar_event_id?: string | null
+          id?: string
+          related_entity_id: string
+          related_entity_type: Database["public"]["Enums"]["activity_entity_type"]
+          status?: Database["public"]["Enums"]["task_status"]
+          title: string
+          type?: Database["public"]["Enums"]["task_type"]
+          updated_at?: string
         }
         Update: {
-          id?: number
-          message?: Json | null
-          session_id?: string | null
+          assigned_to?: string
+          canceled_at?: string | null
+          completed_at?: string | null
+          created_at?: string
+          due_at?: string
+          external_calendar_event_id?: string | null
+          id?: string
+          related_entity_id?: string
+          related_entity_type?: Database["public"]["Enums"]["activity_entity_type"]
+          status?: Database["public"]["Enums"]["task_status"]
+          title?: string
+          type?: Database["public"]["Enums"]["task_type"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tasks_assigned_to_fkey"
+            columns: ["assigned_to"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      team_members: {
+        Row: {
+          created_at: string
+          id: string
+          team_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          team_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          team_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "team_members_team_id_fkey"
+            columns: ["team_id"]
+            isOneToOne: false
+            referencedRelation: "teams"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "team_members_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      teams: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          manager_id: string | null
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          manager_id?: string | null
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          manager_id?: string | null
+          name?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "teams_manager_id_fkey"
+            columns: ["manager_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      users: {
+        Row: {
+          created_at: string
+          email: string
+          full_name: string | null
+          id: string
+          is_active: boolean
+          role: Database["public"]["Enums"]["user_role"]
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          full_name?: string | null
+          id: string
+          is_active?: boolean
+          role?: Database["public"]["Enums"]["user_role"]
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          full_name?: string | null
+          id?: string
+          is_active?: boolean
+          role?: Database["public"]["Enums"]["user_role"]
+          updated_at?: string
         }
         Relationships: []
       }
@@ -136,10 +758,56 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      can_manage_team: { Args: { target_team_id: string }; Returns: boolean }
+      can_view_team: { Args: { target_team_id: string }; Returns: boolean }
+      can_view_user: { Args: { target_user_id: string }; Returns: boolean }
+      crm_can_access_owner: {
+        Args: { target_owner_id: string }
+        Returns: boolean
+      }
+      crm_can_access_related_entity: {
+        Args: {
+          target_entity_id: string
+          target_entity_type: Database["public"]["Enums"]["activity_entity_type"]
+        }
+        Returns: boolean
+      }
+      crm_can_write_owner: {
+        Args: { target_owner_id: string }
+        Returns: boolean
+      }
+      crm_can_write_related_entity: {
+        Args: {
+          target_entity_id: string
+          target_entity_type: Database["public"]["Enums"]["activity_entity_type"]
+        }
+        Returns: boolean
+      }
+      current_user_role: {
+        Args: never
+        Returns: Database["public"]["Enums"]["user_role"]
+      }
+      is_admin: { Args: never; Returns: boolean }
+      is_manager: { Args: never; Returns: boolean }
+      recalculate_deal_value: {
+        Args: { target_deal_id: string }
+        Returns: undefined
+      }
     }
     Enums: {
-      [_ in never]: never
+      activity_actor_type: "user" | "system" | "n8n"
+      activity_entity_type: "lead" | "deal" | "contact" | "company"
+      deal_status: "open" | "won" | "lost"
+      lead_status:
+        | "new"
+        | "contacted"
+        | "qualified"
+        | "disqualified"
+        | "converted"
+      proposal_status: "draft" | "sent" | "approved"
+      task_status: "pending" | "completed" | "canceled"
+      task_type: "call" | "meeting" | "email" | "follow_up" | "other"
+      user_role: "admin" | "manager" | "seller" | "readonly"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -266,6 +934,21 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      activity_actor_type: ["user", "system", "n8n"],
+      activity_entity_type: ["lead", "deal", "contact", "company"],
+      deal_status: ["open", "won", "lost"],
+      lead_status: [
+        "new",
+        "contacted",
+        "qualified",
+        "disqualified",
+        "converted",
+      ],
+      proposal_status: ["draft", "sent", "approved"],
+      task_status: ["pending", "completed", "canceled"],
+      task_type: ["call", "meeting", "email", "follow_up", "other"],
+      user_role: ["admin", "manager", "seller", "readonly"],
+    },
   },
 } as const
