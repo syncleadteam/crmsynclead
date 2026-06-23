@@ -1,11 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { Activity, Building2, CheckCircle2, Clock, Mail, Phone, RefreshCw, Sparkles, UserRound } from "lucide-react";
+import { Activity, Building2, CheckCircle2, Mail, Phone, RefreshCw, Sparkles, UserRound } from "lucide-react";
 import { FormEvent, useCallback, useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { AppShell } from "@/components/crm/app-nav";
+import { ActivityTimeline } from "@/components/crm/activity-timeline";
 import { crmFetch } from "@/components/crm/client-api";
 
 type Lead = {
@@ -322,25 +323,8 @@ export function LeadDetail({ id }: { id: string }) {
                       <Activity className="size-4 text-primary" />
                       <h2 className="font-semibold">Timeline</h2>
                     </div>
-                    <div className="mt-4 grid gap-3">
-                      {lead.activities.length === 0 ? (
-                        <p className="text-sm text-muted-foreground">Nenhuma atividade registrada.</p>
-                      ) : (
-                        lead.activities.map((activityItem) => (
-                          <div key={activityItem.id} className="rounded-lg border bg-background/50 p-3">
-                            <div className="flex flex-col gap-1 md:flex-row md:items-center md:justify-between">
-                              <p className="font-medium">{activityItem.action}</p>
-                              <p className="flex items-center gap-1 text-xs text-muted-foreground">
-                                <Clock className="size-3" />
-                                {new Date(activityItem.created_at).toLocaleString("pt-BR")}
-                              </p>
-                            </div>
-                            <p className="mt-1 text-xs text-muted-foreground">
-                              {activityItem.actor?.full_name ?? activityItem.actor?.email ?? activityItem.actor_type}
-                            </p>
-                          </div>
-                        ))
-                      )}
+                    <div className="mt-4">
+                      <ActivityTimeline items={lead.activities} />
                     </div>
                   </article>
                 </div>

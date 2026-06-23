@@ -11,22 +11,30 @@ export async function GET(request: Request) {
 
   const { sinceIso } = parsePeriod(request);
 
-  const [dealsResult, leadsResult, activitiesResult] = await Promise.all([
+  const [dealsResult, leadsResult, activitiesResult, proposalsResult, dealProductsResult] = await Promise.all([
     auth.context.supabase
       .from("deals")
       .select("id,value,status,stage:pipeline_stages(id,name,position),owner:users!deals_owner_id_fkey(id,email,full_name),created_at")
       .is("deleted_at", null),
     auth.context.supabase
       .from("leads")
-      .select("id,status,created_at")
+      .select("id,status,created_at,contact:contacts(source)")
       .is("deleted_at", null)
       .gte("created_at", sinceIso),
     auth.context.supabase
       .from("activities")
-      .select("id,entity_type,entity_id,action,created_at")
+      .select("id,entity_type,entity_id,action,metadata,created_at")
       .gte("created_at", sinceIso)
       .order("created_at", { ascending: false })
-      .limit(8),
+      .limit(50),
+    auth.context.supabase
+      .from("proposals")
+      .select("id,status,created_at")
+      .gte("created_at", sinceIso),
+    auth.context.supabase
+      .from("deal_products")
+      .select("id,quantity,total_amount,product:products(id,name,landing_form_category)")
+      .gte("created_at", sinceIso),
   ]);
 
   if (dealsResult.error) {
@@ -39,6 +47,14 @@ export async function GET(request: Request) {
 
   if (activitiesResult.error) {
     return apiError("bad_request", "Nao foi possivel listar atividades.", 400, activitiesResult.error.message);
+  }
+
+  if (proposalsResult.error) {
+    return apiError("bad_request", "Nao foi possivel consolidar propostas.", 400, proposalsResult.error.message);
+  }
+
+  if (dealProductsResult.error) {
+    return apiError("bad_request", "Nao foi possivel consolidar produtos.", 400, dealProductsResult.error.message);
   }
 
   const deals = dealsResult.data ?? [];
@@ -85,6 +101,65 @@ export async function GET(request: Request) {
   const leads = leadsResult.data ?? [];
   const convertedLeads = leads.filter((lead) => lead.status === "converted").length;
   const qualifiedLeads = leads.filter((lead) => lead.status === "qualified").length;
+  const proposals = proposalsResult.data ?? [];
+  const activities = activitiesResult.data ?? [];
+  const leadsBySource = Object.values(
+    leads.reduce<Record<string, { source: string; count: number }>>((groups, lead) => {
+      const contact = Array.isArray(lead.contact) ? lead.contact[0] : lead.contact;
+      const source = contact?.source ?? "CRM";
+      groups[source] ??= { source, count: 0 };
+      groups[source].count += 1;
+      return groups;
+    }, {}),
+  ).sort((a, b) => b.count - a.count);
+
+  const requestedProducts = new Map<string, { name: string; count: number; value: number; source: string }>();
+
+  for (const activity of activities) {
+    if (activity.action !== "landing_infrastructure_form_submitted") continue;
+    const metadata = activity.metadata as { modules?: Array<{ code?: string; name?: string; price?: number }> };
+
+    for (const moduleItem of metadata.modules ?? []) {
+      const key = moduleItem.code ?? moduleItem.name ?? "produto";
+      const current = requestedProducts.get(key) ?? {
+        name: moduleItem.name ?? key,
+        count: 0,
+        value: 0,
+        source: "landing",
+      };
+      current.count += 1;
+      current.value += Number(moduleItem.price ?? 0);
+      requestedProducts.set(key, current);
+    }
+  }
+
+  for (const item of dealProductsResult.data ?? []) {
+    const product = Array.isArray(item.product) ? item.product[0] : item.product;
+    const key = product?.id ?? item.id;
+    const current = requestedProducts.get(key) ?? {
+      name: product?.name ?? "Produto em oportunidade",
+      count: 0,
+      value: 0,
+      source: "oportunidade",
+    };
+    current.count += Number(item.quantity ?? 0);
+    current.value += Number(item.total_amount ?? 0);
+    requestedProducts.set(key, current);
+  }
+
+  const topProducts = Array.from(requestedProducts.values())
+    .sort((a, b) => b.count - a.count || b.value - a.value)
+    .slice(0, 8);
+  const conversion = {
+    leads: leads.length,
+    qualified: qualifiedLeads,
+    opportunities: convertedLeads + openDeals.length + wonDeals.length + lostDeals.length,
+    proposals: proposals.length,
+    won: wonDeals.length,
+    landing_to_qualified_rate: leads.length ? qualifiedLeads / leads.length : 0,
+    lead_to_opportunity_rate: leads.length ? convertedLeads / leads.length : 0,
+    proposal_to_win_rate: proposals.length ? wonDeals.length / proposals.length : 0,
+  };
 
   return apiData({
     metrics: {
@@ -97,6 +172,9 @@ export async function GET(request: Request) {
       leads_converted: convertedLeads,
     },
     by_stage: byStage,
-    recent_activities: activitiesResult.data ?? [],
+    leads_by_source: leadsBySource,
+    top_products: topProducts,
+    conversion,
+    recent_activities: activities.slice(0, 8),
   });
 }

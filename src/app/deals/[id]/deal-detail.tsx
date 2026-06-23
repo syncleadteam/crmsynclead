@@ -6,6 +6,7 @@ import { FormEvent, useCallback, useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { AppShell } from "@/components/crm/app-nav";
+import { ActivityTimeline } from "@/components/crm/activity-timeline";
 import { crmFetch } from "@/components/crm/client-api";
 
 type Deal = {
@@ -41,11 +42,21 @@ type Proposal = {
   total_value: number;
 };
 
+type ActivityItem = {
+  id: string;
+  actor_type: "user" | "system" | "n8n";
+  action: string;
+  metadata: Record<string, unknown>;
+  created_at: string;
+  actor: { full_name: string | null; email: string } | null;
+};
+
 export function DealDetail({ id }: { id: string }) {
   const [deal, setDeal] = useState<Deal | null>(null);
   const [products, setProducts] = useState<Product[]>([]);
   const [items, setItems] = useState<DealProduct[]>([]);
   const [proposals, setProposals] = useState<Proposal[]>([]);
+  const [activities, setActivities] = useState<ActivityItem[]>([]);
   const [productId, setProductId] = useState("");
   const [quantity, setQuantity] = useState("1");
   const [proposalTitle, setProposalTitle] = useState("");
@@ -59,18 +70,20 @@ export function DealDetail({ id }: { id: string }) {
     setError(null);
 
     try {
-      const [dealPayload, productsPayload, itemsPayload, proposalsPayload] =
+      const [dealPayload, productsPayload, itemsPayload, proposalsPayload, activitiesPayload] =
         await Promise.all([
           crmFetch<{ data: Deal }>(`/api/v1/deals/${id}`),
           crmFetch<{ data: Product[] }>("/api/v1/products"),
           crmFetch<{ data: DealProduct[] }>(`/api/v1/deals/${id}/products`),
           crmFetch<{ data: Proposal[] }>(`/api/v1/proposals?deal_id=${id}`),
+          crmFetch<{ data: ActivityItem[] }>(`/api/v1/activities?entity_type=deal&entity_id=${id}`),
         ]);
 
       setDeal(dealPayload.data);
       setProducts(productsPayload.data);
       setItems(itemsPayload.data);
       setProposals(proposalsPayload.data);
+      setActivities(activitiesPayload.data);
       setProductId((current) => current || productsPayload.data[0]?.id || "");
       setProposalTitle((current) => current || `Proposta - ${dealPayload.data.title}`);
     } catch (requestError) {
@@ -255,6 +268,15 @@ export function DealDetail({ id }: { id: string }) {
                         </Link>
                       ))
                     )}
+                  </div>
+                </div>
+
+                <div className="rounded-lg border">
+                  <div className="border-b px-4 py-3">
+                    <h2 className="font-semibold">Historico da oportunidade</h2>
+                  </div>
+                  <div className="p-4">
+                    <ActivityTimeline items={activities} emptyText="Nenhum movimento registrado nesta oportunidade." />
                   </div>
                 </div>
               </>

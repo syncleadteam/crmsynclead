@@ -29,6 +29,18 @@ type PipelineSummary = {
     action: string;
     created_at: string;
   }>;
+  leads_by_source: Array<{ source: string; count: number }>;
+  top_products: Array<{ name: string; count: number; value: number; source: string }>;
+  conversion: {
+    leads: number;
+    qualified: number;
+    opportunities: number;
+    proposals: number;
+    won: number;
+    landing_to_qualified_rate: number;
+    lead_to_opportunity_rate: number;
+    proposal_to_win_rate: number;
+  };
 };
 
 type Forecast = Array<{ month: string; count: number; value: number }>;
@@ -94,6 +106,17 @@ export function DashboardPage() {
     ...(summary?.by_stage.map((stage) => stage.value) ?? [0]),
     1,
   );
+  const maxSourceCount = Math.max(...(summary?.leads_by_source.map((item) => item.count) ?? [0]), 1);
+  const conversionSteps = summary
+    ? [
+        ["Leads", summary.conversion.leads],
+        ["Qualificados", summary.conversion.qualified],
+        ["Oportunidades", summary.conversion.opportunities],
+        ["Propostas", summary.conversion.proposals],
+        ["Ganhos", summary.conversion.won],
+      ]
+    : [];
+  const maxConversion = Math.max(...conversionSteps.map(([, value]) => Number(value)), 1);
 
   return (
     <AppShell>
@@ -190,6 +213,87 @@ export function DashboardPage() {
                   <div key={item.month} className="flex justify-between p-4 text-sm">
                     <span>{item.month}</span>
                     <span>{item.count} - {currency(item.value)}</span>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+        </section>
+
+        <section className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)]">
+          <div className="rounded-xl border bg-card/70">
+            <div className="border-b px-4 py-3">
+              <h2 className="font-semibold">Conversao comercial</h2>
+            </div>
+            <div className="grid gap-3 p-4">
+              {conversionSteps.length === 0 ? (
+                <p className="text-sm text-muted-foreground">Sem dados de conversao.</p>
+              ) : (
+                conversionSteps.map(([label, value]) => (
+                  <div key={label}>
+                    <div className="mb-1 flex justify-between text-sm">
+                      <span>{label}</span>
+                      <span>{value}</span>
+                    </div>
+                    <div className="h-2 rounded bg-muted">
+                      <div
+                        className="h-2 rounded bg-accent-cyan"
+                        style={{ width: `${Math.max((Number(value) / maxConversion) * 100, 4)}%` }}
+                      />
+                    </div>
+                  </div>
+                ))
+              )}
+              <div className="mt-2 grid gap-2 text-xs text-muted-foreground">
+                <span>Lead para oportunidade: {Math.round((summary?.conversion.lead_to_opportunity_rate ?? 0) * 100)}%</span>
+                <span>Proposta para ganho: {Math.round((summary?.conversion.proposal_to_win_rate ?? 0) * 100)}%</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="rounded-xl border bg-card/70">
+            <div className="border-b px-4 py-3">
+              <h2 className="font-semibold">Leads por origem</h2>
+            </div>
+            <div className="grid gap-3 p-4">
+              {(summary?.leads_by_source ?? []).length === 0 ? (
+                <p className="text-sm text-muted-foreground">Sem origem registrada.</p>
+              ) : (
+                summary?.leads_by_source.map((source) => (
+                  <div key={source.source}>
+                    <div className="mb-1 flex justify-between text-sm">
+                      <span>{source.source}</span>
+                      <span>{source.count}</span>
+                    </div>
+                    <div className="h-2 rounded bg-muted">
+                      <div
+                        className="h-2 rounded bg-primary"
+                        style={{ width: `${Math.max((source.count / maxSourceCount) * 100, 4)}%` }}
+                      />
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+
+          <div className="rounded-xl border bg-card/70">
+            <div className="border-b px-4 py-3">
+              <h2 className="font-semibold">Produtos mais solicitados</h2>
+            </div>
+            <div className="divide-y">
+              {(summary?.top_products ?? []).length === 0 ? (
+                <p className="p-4 text-sm text-muted-foreground">Sem produtos solicitados.</p>
+              ) : (
+                summary?.top_products.map((product) => (
+                  <div key={`${product.source}-${product.name}`} className="p-4 text-sm">
+                    <div className="flex justify-between gap-3">
+                      <span className="font-medium">{product.name}</span>
+                      <span>{product.count}x</span>
+                    </div>
+                    <p className="mt-1 text-muted-foreground">
+                      {product.source} - {currency(product.value)}
+                    </p>
                   </div>
                 ))
               )}

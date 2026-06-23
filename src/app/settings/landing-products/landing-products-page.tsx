@@ -1,7 +1,7 @@
 "use client";
 
 import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
-import { PackagePlus, RefreshCw, Trash2 } from "lucide-react";
+import { Bot, Boxes, Eye, PackagePlus, RefreshCw, Tags, Trash2 } from "lucide-react";
 
 import { AppShell } from "@/components/crm/app-nav";
 import { crmFetch } from "@/components/crm/client-api";
@@ -62,6 +62,19 @@ function categoryLabel(category: LandingCategory | null) {
   return "-";
 }
 
+function agentLabel(code: string) {
+  return agentOptions.find((agent) => agent.value === code)?.label ?? code;
+}
+
+function productTags(item: LandingProduct) {
+  return [
+    item.landing_form_category === "agent" ? "Agente IA" : "Modulo",
+    item.is_active ? "Ativo na landing" : "Pausado",
+    item.landing_form_required_agents.length > 0 ? "Com dependencia" : null,
+    item.unit_price >= 300 ? "Ticket alto" : "Entrada",
+  ].filter((tag): tag is string => Boolean(tag));
+}
+
 export function LandingProductsPage() {
   const [items, setItems] = useState<LandingProduct[]>([]);
   const [form, setForm] = useState<FormState>(initialForm);
@@ -77,6 +90,10 @@ export function LandingProductsPage() {
     }),
     [items],
   );
+  const activeCount = items.filter((item) => item.is_active).length;
+  const modulesWithDependencies = grouped.modules.filter(
+    (item) => item.landing_form_required_agents.length > 0,
+  ).length;
 
   const load = useCallback(async (showLoading = false) => {
     if (showLoading) setIsLoading(true);
@@ -185,7 +202,7 @@ export function LandingProductsPage() {
 
   function ProductTable({ title, rows }: { title: string; rows: LandingProduct[] }) {
     return (
-      <section className="rounded-lg border bg-background">
+      <section className="rounded-xl border bg-card/70">
         <header className="border-b px-4 py-3">
           <h2 className="font-semibold">{title}</h2>
         </header>
@@ -195,6 +212,8 @@ export function LandingProductsPage() {
               <tr>
                 <th className="px-4 py-3 font-medium">Produto</th>
                 <th className="px-4 py-3 font-medium">Codigo</th>
+                <th className="px-4 py-3 font-medium">Dependencias</th>
+                <th className="px-4 py-3 font-medium">Tags</th>
                 <th className="px-4 py-3 font-medium">Preco</th>
                 <th className="px-4 py-3 font-medium">Ativo</th>
                 <th className="px-4 py-3 font-medium">Acoes</th>
@@ -203,7 +222,7 @@ export function LandingProductsPage() {
             <tbody>
               {rows.length === 0 ? (
                 <tr>
-                  <td className="px-4 py-6 text-muted-foreground" colSpan={5}>
+                  <td className="px-4 py-6 text-muted-foreground" colSpan={7}>
                     Nenhum produto configurado.
                   </td>
                 </tr>
@@ -217,6 +236,28 @@ export function LandingProductsPage() {
                     <td className="px-4 py-3">
                       <div className="font-mono text-xs">{item.landing_form_code}</div>
                       <div className="mt-1 text-xs text-muted-foreground">{categoryLabel(item.landing_form_category)}</div>
+                    </td>
+                    <td className="px-4 py-3">
+                      {item.landing_form_required_agents.length === 0 ? (
+                        <span className="text-xs text-muted-foreground">Sempre visivel</span>
+                      ) : (
+                        <div className="flex max-w-56 flex-wrap gap-1">
+                          {item.landing_form_required_agents.map((agent) => (
+                            <span key={agent} className="rounded-md border bg-background/50 px-2 py-1 text-xs">
+                              {agentLabel(agent)}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="flex max-w-56 flex-wrap gap-1">
+                        {productTags(item).map((tag) => (
+                          <span key={tag} className="rounded-md border bg-background/50 px-2 py-1 text-xs text-muted-foreground">
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
                     </td>
                     <td className="px-4 py-3">{brl(item.unit_price)}</td>
                     <td className="px-4 py-3">
@@ -247,6 +288,19 @@ export function LandingProductsPage() {
                         <Button
                           type="button"
                           size="sm"
+                          variant="outline"
+                          disabled={updatingId === item.id}
+                          onClick={() => {
+                            const nextDescription = window.prompt("Descricao comercial", item.description ?? "");
+                            if (nextDescription === null) return;
+                            void patchItem(item.id, { description: nextDescription });
+                          }}
+                        >
+                          Texto
+                        </Button>
+                        <Button
+                          type="button"
+                          size="sm"
                           variant="destructive"
                           disabled={updatingId === item.id}
                           onClick={() => void removeItem(item.id)}
@@ -270,7 +324,7 @@ export function LandingProductsPage() {
     <AppShell>
       <div className="grid w-full gap-6 px-4 py-6 lg:grid-cols-[minmax(0,1fr)_380px] lg:px-8">
         <div className="space-y-6">
-          <header className="flex flex-col gap-3 rounded-lg border bg-background px-4 py-4 md:flex-row md:items-center md:justify-between">
+          <header className="flex flex-col gap-3 rounded-xl border bg-card/70 px-4 py-4 md:flex-row md:items-center md:justify-between">
             <div>
               <h1 className="text-2xl font-semibold tracking-tight">Catalogo da landing</h1>
               <p className="mt-1 text-sm text-muted-foreground">
@@ -290,18 +344,73 @@ export function LandingProductsPage() {
           ) : null}
 
           {isLoading ? (
-            <section className="rounded-lg border bg-background px-4 py-8 text-sm text-muted-foreground">
+            <section className="rounded-xl border bg-card/70 px-4 py-8 text-sm text-muted-foreground">
               Carregando...
             </section>
           ) : (
             <>
+              <section className="grid gap-4 md:grid-cols-3">
+                <div className="rounded-xl border bg-card/70 p-4">
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <Bot className="size-4 text-primary" />
+                    Agentes ativos
+                  </div>
+                  <p className="mt-2 text-2xl font-semibold">
+                    {grouped.agents.filter((item) => item.is_active).length}
+                  </p>
+                </div>
+                <div className="rounded-xl border bg-card/70 p-4">
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <Boxes className="size-4 text-accent-cyan" />
+                    Modulos ativos
+                  </div>
+                  <p className="mt-2 text-2xl font-semibold">
+                    {grouped.modules.filter((item) => item.is_active).length}
+                  </p>
+                </div>
+                <div className="rounded-xl border bg-card/70 p-4">
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <Tags className="size-4 text-primary" />
+                    Dependencias
+                  </div>
+                  <p className="mt-2 text-2xl font-semibold">{modulesWithDependencies}</p>
+                </div>
+              </section>
+
+              <section className="rounded-xl border bg-card/70 p-4">
+                <div className="flex items-center gap-2">
+                  <Eye className="size-4 text-accent-cyan" />
+                  <h2 className="font-semibold">Previa da landing</h2>
+                </div>
+                <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+                  {items.filter((item) => item.is_active).slice(0, 6).map((item) => (
+                    <article key={item.id} className="rounded-xl border bg-background/40 p-4">
+                      <div className="flex items-start justify-between gap-3">
+                        <div>
+                          <p className="font-semibold">{item.name}</p>
+                          <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">
+                            {item.description ?? "Sem descricao comercial."}
+                          </p>
+                        </div>
+                        <span className="rounded-md border px-2 py-1 text-xs text-accent-cyan">
+                          {categoryLabel(item.landing_form_category)}
+                        </span>
+                      </div>
+                      <p className="mt-3 font-semibold">{brl(item.unit_price)}/mes</p>
+                    </article>
+                  ))}
+                </div>
+                <p className="mt-3 text-xs text-muted-foreground">
+                  {activeCount} itens ativos aparecem no formulario; itens pausados ficam ocultos para o lead.
+                </p>
+              </section>
               <ProductTable title="Agentes" rows={grouped.agents} />
               <ProductTable title="Modulos" rows={grouped.modules} />
             </>
           )}
         </div>
 
-        <aside className="rounded-lg border bg-background p-4">
+        <aside className="rounded-xl border bg-card/70 p-4">
           <h2 className="font-semibold">Novo item da landing</h2>
           <form onSubmit={createItem} className="mt-4 grid gap-3">
             <label className="grid gap-1.5 text-sm font-medium">
