@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
 import {
@@ -17,14 +18,14 @@ import {
 import { Button } from "@/components/ui/button";
 
 const navItems = [
-  { href: "/dashboard", label: "Dashboard", icon: BarChart3 },
-  { href: "/pipeline", label: "Pipeline", icon: KanbanSquare },
-  { href: "/deals", label: "Deals", icon: CircleDollarSign },
-  { href: "/companies", label: "Empresas", icon: Building2 },
+  { href: "/dashboard", label: "Visao geral", icon: BarChart3 },
+  { href: "/pipeline", label: "Funil", icon: KanbanSquare },
+  { href: "/deals", label: "Oportunidades", icon: CircleDollarSign },
+  { href: "/companies", label: "Contas", icon: Building2 },
   { href: "/contacts", label: "Contatos", icon: Users },
-  { href: "/tasks", label: "Tarefas", icon: CalendarCheck },
-  { href: "/settings/landing-products", label: "Produtos landing", icon: Package },
-  { href: "/settings/team", label: "Settings", icon: Settings },
+  { href: "/tasks", label: "Agenda", icon: CalendarCheck },
+  { href: "/settings/landing-products", label: "Catalogo da landing", icon: Package },
+  { href: "/settings/team", label: "Equipe", icon: Settings },
 ];
 
 function NavLinks({ compact = false }: { compact?: boolean }) {
@@ -43,7 +44,7 @@ function NavLinks({ compact = false }: { compact?: boolean }) {
             asChild
             size="sm"
             variant={isActive ? "secondary" : "ghost"}
-            className={compact ? "shrink-0" : "w-full justify-start"}
+            className={compact ? "shrink-0" : "w-full justify-start text-sidebar-foreground/85 hover:text-sidebar-foreground"}
           >
             <Link href={item.href}>
               <Icon />
@@ -58,11 +59,20 @@ function NavLinks({ compact = false }: { compact?: boolean }) {
 
 export function AppSidebar() {
   return (
-    <aside className="hidden w-64 shrink-0 border-r bg-background lg:block">
+    <aside className="hidden w-72 shrink-0 border-r border-sidebar-border bg-sidebar/95 lg:block">
       <div className="sticky top-0 flex h-screen flex-col">
-        <div className="border-b px-5 py-4">
-          <p className="text-sm font-medium text-muted-foreground">AI-Native</p>
-          <h2 className="text-lg font-semibold tracking-tight">CRM</h2>
+        <div className="border-b border-sidebar-border px-5 py-5">
+          <Image
+            src="/synclead-logo.png"
+            alt="SyncLead"
+            width={150}
+            height={57}
+            priority
+            className="h-auto w-36"
+          />
+          <p className="mt-4 text-xs font-medium uppercase tracking-[0.22em] text-muted-foreground">
+            Operacao de automacoes
+          </p>
         </div>
         <nav className="grid gap-1 p-3">
           <NavLinks />
@@ -74,8 +84,9 @@ export function AppSidebar() {
 
 export function AppMobileNav() {
   return (
-    <nav className="border-b bg-background lg:hidden">
-      <div className="flex items-center gap-2 overflow-x-auto px-4 py-2">
+    <nav className="border-b border-sidebar-border bg-sidebar lg:hidden">
+      <div className="flex items-center gap-3 overflow-x-auto px-4 py-3">
+        <Image src="/synclead-logo.png" alt="SyncLead" width={112} height={43} className="h-auto w-24 shrink-0" />
         <NavLinks compact />
       </div>
     </nav>
@@ -84,8 +95,8 @@ export function AppMobileNav() {
 
 export function AppShell({ children }: { children: ReactNode }) {
   return (
-    <main className="min-h-screen bg-muted/40">
-      <div className="mx-auto flex min-h-screen w-full max-w-7xl bg-muted/40">
+    <main className="min-h-screen bg-background">
+      <div className="mx-auto flex min-h-screen w-full max-w-[1600px]">
         <AppSidebar />
         <section className="min-w-0 flex-1">
           <AppMobileNav />

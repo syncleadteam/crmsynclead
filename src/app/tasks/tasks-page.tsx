@@ -29,9 +29,9 @@ const taskTypes = [
 
 const entityTypes = [
   { value: "lead", label: "Lead" },
-  { value: "deal", label: "Deal" },
+  { value: "deal", label: "Oportunidade" },
   { value: "contact", label: "Contato" },
-  { value: "company", label: "Empresa" },
+  { value: "company", label: "Conta" },
 ];
 
 export function TasksPage() {

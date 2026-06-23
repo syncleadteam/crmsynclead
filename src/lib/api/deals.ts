@@ -28,7 +28,7 @@ export async function getPipelineStage(
   if (error || !data) {
     return {
       ok: false,
-      response: apiError("bad_request", "Etapa invalida para o pipeline.", 400),
+      response: apiError("bad_request", "Etapa invalida para o funil.", 400),
     };
   }
 
@@ -59,7 +59,7 @@ export function validateDealStatusForStage(
   if (status === "won" && !stage.is_won_stage) {
     return apiError(
       "bad_request",
-      "Deal so pode ser ganho em uma etapa final positiva.",
+      "A oportunidade so pode ser ganha em uma etapa final positiva.",
       400,
     );
   }

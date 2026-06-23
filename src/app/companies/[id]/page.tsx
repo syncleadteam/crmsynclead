@@ -11,7 +11,7 @@ export default async function CompanyDetailPage({ params }: PageProps) {
     <EntityDetail
       endpoint={`/api/v1/companies/${id}`}
       backHref="/companies"
-      title="Detalhe da empresa"
+      title="Detalhe da conta"
     />
   );
 }

@@ -5,7 +5,7 @@ export default function LeadsPage() {
     <EntityList
       kind="leads"
       title="Leads"
-      description="Registros de pre-qualificacao antes de virarem deals."
+      description="Entradas captadas pela landing e pelos canais antes de virarem oportunidades."
       fields={[
         { name: "contact_id", label: "ID do contato", required: true },
         {
@@ -26,8 +26,8 @@ export default function LeadsPage() {
         { key: "contact.full_name", label: "Contato" },
         { key: "status", label: "Status" },
         { key: "score", label: "Score" },
-        { key: "contact.company.name", label: "Empresa" },
-        { key: "owner.full_name", label: "Owner" },
+        { key: "contact.company.name", label: "Conta" },
+        { key: "owner.full_name", label: "Consultor" },
       ]}
     />
   );

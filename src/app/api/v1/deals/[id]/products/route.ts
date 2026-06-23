@@ -21,7 +21,7 @@ export async function GET(request: Request, context: RouteContext) {
     .order("created_at", { ascending: false });
 
   if (error) {
-    return apiError("bad_request", "Nao foi possivel listar itens do deal.", 400, error.message);
+    return apiError("bad_request", "Nao foi possivel listar itens da oportunidade.", 400, error.message);
   }
 
   return apiData(data);
@@ -64,7 +64,7 @@ export async function POST(request: Request, context: RouteContext) {
     .single();
 
   if (error) {
-    return apiError("bad_request", "Nao foi possivel adicionar produto ao deal.", 400, error.message);
+    return apiError("bad_request", "Nao foi possivel adicionar produto a oportunidade.", 400, error.message);
   }
 
   return apiData(data, { status: 201 });

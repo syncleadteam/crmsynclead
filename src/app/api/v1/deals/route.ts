@@ -47,7 +47,7 @@ export async function GET(request: Request) {
   const { data, error } = await query;
 
   if (error) {
-    return apiError("bad_request", "Nao foi possivel listar deals.", 400, error.message);
+    return apiError("bad_request", "Nao foi possivel listar oportunidades.", 400, error.message);
   }
 
   return apiData(data);
@@ -106,7 +106,7 @@ export async function POST(request: Request) {
     .single();
 
   if (error) {
-    return apiError("bad_request", "Nao foi possivel criar deal.", 400, error.message);
+    return apiError("bad_request", "Nao foi possivel criar oportunidade.", 400, error.message);
   }
 
   return apiData(data, { status: 201 });

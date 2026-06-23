@@ -37,7 +37,7 @@ export async function GET(request: Request) {
       const owner = Array.isArray(deal.owner) ? deal.owner[0] : deal.owner;
       groups[deal.owner_id] ??= {
         owner_id: deal.owner_id,
-        owner_name: owner?.full_name ?? owner?.email ?? "Sem owner",
+        owner_name: owner?.full_name ?? owner?.email ?? "Sem consultor",
         won_count: 0,
         open_count: 0,
         won_value: 0,

@@ -69,7 +69,7 @@ export async function POST(request: Request, context: RouteContext) {
     .single();
 
   if (dealError) {
-    return apiError("bad_request", "Nao foi possivel criar deal a partir do lead.", 400, dealError.message);
+    return apiError("bad_request", "Nao foi possivel criar oportunidade a partir do lead.", 400, dealError.message);
   }
 
   const { error: updateError } = await auth.context.supabase
@@ -81,7 +81,7 @@ export async function POST(request: Request, context: RouteContext) {
     .eq("id", id);
 
   if (updateError) {
-    return apiError("bad_request", "Deal criado, mas lead nao foi marcado como convertido.", 400, updateError.message);
+    return apiError("bad_request", "Oportunidade criada, mas o lead nao foi marcado como convertido.", 400, updateError.message);
   }
 
   await createActivity(auth.context, {

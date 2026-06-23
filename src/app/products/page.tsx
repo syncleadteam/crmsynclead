@@ -4,8 +4,8 @@ export default function ProductsPage() {
   return (
     <EntityList
       kind="products"
-      title="Produtos"
-      description="Catalogo de produtos e servicos comercializaveis."
+      title="Catalogo comercial"
+      description="Produtos e servicos usados em propostas de automacao."
       fields={[
         { name: "name", label: "Nome", required: true },
         { name: "sku", label: "SKU" },

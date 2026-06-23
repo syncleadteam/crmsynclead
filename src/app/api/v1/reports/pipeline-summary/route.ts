@@ -30,7 +30,7 @@ export async function GET(request: Request) {
   ]);
 
   if (dealsResult.error) {
-    return apiError("bad_request", "Nao foi possivel agregar deals.", 400, dealsResult.error.message);
+    return apiError("bad_request", "Nao foi possivel consolidar oportunidades.", 400, dealsResult.error.message);
   }
 
   if (leadsResult.error) {

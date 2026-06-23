@@ -57,7 +57,7 @@ export function IntegrationsPage() {
         <section className="rounded-lg border bg-background">
           <header className="flex flex-col gap-3 border-b px-4 py-4 md:flex-row md:items-center md:justify-between">
             <div>
-              <p className="text-sm font-medium text-muted-foreground">Settings</p>
+              <p className="text-sm font-medium text-primary">Configuracao</p>
               <h1 className="text-2xl font-semibold tracking-tight">
                 Estado das integracoes
               </h1>

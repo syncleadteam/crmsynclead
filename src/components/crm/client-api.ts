@@ -35,7 +35,7 @@ export async function crmFetch<T>(
   };
 
   if (!response.ok) {
-    throw new Error(payload.error?.message ?? "CRM API request failed.");
+    throw new Error(payload.error?.message ?? "Falha ao consultar a central SyncLead.");
   }
 
   return payload;

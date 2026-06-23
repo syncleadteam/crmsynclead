@@ -119,7 +119,7 @@ export function EntityList({
   return (
     <AppShell>
       <div className="grid w-full gap-6 px-4 py-6 lg:grid-cols-[minmax(0,1fr)_360px] lg:px-8">
-        <section className="rounded-lg border bg-background">
+        <section className="rounded-xl border bg-card/70 shadow-[0_20px_70px_-55px_var(--primary)]">
           <header className="flex flex-col gap-3 border-b px-4 py-4 md:flex-row md:items-center md:justify-between">
             <div>
               <h1 className="text-2xl font-semibold tracking-tight">{title}</h1>
@@ -188,8 +188,8 @@ export function EntityList({
           </div>
         </section>
 
-        <aside className="rounded-lg border bg-background p-4">
-          <h2 className="font-semibold">Novo registro</h2>
+        <aside className="rounded-xl border bg-card/70 p-4 shadow-[0_20px_70px_-55px_var(--primary)]">
+          <h2 className="font-semibold">Novo item</h2>
           <form onSubmit={createItem} className="mt-4 grid gap-3">
             {fields.map((field) => (
               <label key={field.name} className="grid gap-1.5 text-sm font-medium">
@@ -231,7 +231,7 @@ export function EntityList({
             ))}
             <Button type="submit" disabled={isSubmitting}>
               <Plus />
-              {isSubmitting ? "Criando" : "Criar"}
+              {isSubmitting ? "Criando" : "Adicionar"}
             </Button>
           </form>
         </aside>

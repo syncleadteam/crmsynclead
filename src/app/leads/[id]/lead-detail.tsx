@@ -155,7 +155,7 @@ export function LeadDetail({ id }: { id: string }) {
                     <p className="font-medium">{lead.score}</p>
                   </div>
                   <div className="rounded-md border p-3">
-                    <p className="text-sm text-muted-foreground">Deal convertido</p>
+                    <p className="text-sm text-muted-foreground">Oportunidade convertida</p>
                     <p className="font-medium">{lead.converted_deal_id ?? "-"}</p>
                   </div>
                 </div>
@@ -167,7 +167,7 @@ export function LeadDetail({ id }: { id: string }) {
         </section>
 
         <aside className="rounded-lg border bg-background p-4">
-          <h2 className="font-semibold">Converter em deal</h2>
+          <h2 className="font-semibold">Converter em oportunidade</h2>
           {lead?.status !== "qualified" ? (
             <p className="mt-3 text-sm text-muted-foreground">
               Conversao disponivel apenas para leads qualificados.
@@ -184,7 +184,7 @@ export function LeadDetail({ id }: { id: string }) {
                 />
               </label>
               <label className="grid gap-1.5 text-sm font-medium">
-                Pipeline
+                Funil
                 <select
                   className="h-9 rounded-md border border-input bg-background px-3 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   value={pipelineId}

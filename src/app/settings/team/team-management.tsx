@@ -89,7 +89,7 @@ export function TeamManagement() {
       setUsers(usersPayload.data);
       setTeams(teamsPayload.data);
     } catch {
-      setError("Falha ao consultar a API do CRM.");
+      setError("Falha ao consultar a central SyncLead.");
     } finally {
       setIsLoading(false);
     }
@@ -106,7 +106,7 @@ export function TeamManagement() {
       <div className="flex w-full flex-col gap-6 px-4 py-6 lg:px-8">
         <header className="flex flex-col gap-4 border-b pb-5 md:flex-row md:items-center md:justify-between">
           <div>
-            <p className="text-sm font-medium text-muted-foreground">Settings</p>
+            <p className="text-sm font-medium text-primary">Equipe</p>
             <h1 className="text-2xl font-semibold tracking-tight">
               Equipes e usuarios
             </h1>

@@ -35,7 +35,7 @@ export async function POST(request: Request, context: RouteContext) {
     .single();
 
   if (currentError || !current) {
-    return apiError("not_found", "Deal nao encontrado.", 404);
+    return apiError("not_found", "Oportunidade nao encontrada.", 404);
   }
 
   const stageResult = await getPipelineStage(
@@ -75,7 +75,7 @@ export async function POST(request: Request, context: RouteContext) {
     .single();
 
   if (error) {
-    return apiError("bad_request", "Nao foi possivel mover deal.", 400, error.message);
+    return apiError("bad_request", "Nao foi possivel mover oportunidade.", 400, error.message);
   }
 
   const activity = await createActivity(auth.context, {
@@ -89,7 +89,7 @@ export async function POST(request: Request, context: RouteContext) {
   });
 
   if (activity.error) {
-    return apiError("bad_request", "Deal movido, mas timeline nao foi registrada.", 400, activity.error.message);
+    return apiError("bad_request", "Oportunidade movida, mas a atividade nao foi registrada.", 400, activity.error.message);
   }
 
   return apiData(data);

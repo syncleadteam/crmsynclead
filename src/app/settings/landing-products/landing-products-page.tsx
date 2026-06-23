@@ -272,9 +272,9 @@ export function LandingProductsPage() {
         <div className="space-y-6">
           <header className="flex flex-col gap-3 rounded-lg border bg-background px-4 py-4 md:flex-row md:items-center md:justify-between">
             <div>
-              <h1 className="text-2xl font-semibold tracking-tight">Produtos da landing</h1>
+              <h1 className="text-2xl font-semibold tracking-tight">Catalogo da landing</h1>
               <p className="mt-1 text-sm text-muted-foreground">
-                Controle os agentes e modulos exibidos no formulario de infraestrutura.
+                Ative, pause e precifique os agentes e modulos exibidos no formulario.
               </p>
             </div>
             <Button type="button" variant="outline" onClick={() => void load(true)} disabled={isLoading}>

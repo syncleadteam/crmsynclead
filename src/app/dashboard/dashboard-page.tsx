@@ -100,9 +100,9 @@ export function DashboardPage() {
       <div className="flex w-full flex-col gap-6 px-4 py-6 lg:px-8">
         <header className="flex flex-col gap-3 border-b pb-5 md:flex-row md:items-center md:justify-between">
           <div>
-            <p className="text-sm font-medium text-muted-foreground">Dashboard</p>
+            <p className="text-sm font-medium text-primary">Visao geral</p>
             <h1 className="text-2xl font-semibold tracking-tight">
-              Desempenho comercial
+              Performance das automacoes
             </h1>
           </div>
           <div className="flex flex-wrap gap-2">
@@ -135,12 +135,12 @@ export function DashboardPage() {
 
         <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           {[
-            ["Deals abertos", summary?.metrics.open_deals ?? 0],
-            ["Valor em pipeline", currency(summary?.metrics.total_pipeline_value ?? 0)],
+            ["Oportunidades abertas", summary?.metrics.open_deals ?? 0],
+            ["Valor no funil", currency(summary?.metrics.total_pipeline_value ?? 0)],
             ["Ticket medio", currency(summary?.metrics.average_ticket ?? 0)],
             ["Taxa de ganho", `${Math.round((summary?.metrics.win_rate ?? 0) * 100)}%`],
           ].map(([label, value]) => (
-            <div key={label} className="rounded-lg border bg-background p-4">
+            <div key={label} className="rounded-xl border bg-card/70 p-4 shadow-[0_20px_70px_-50px_var(--primary)]">
               <p className="text-sm text-muted-foreground">{label}</p>
               <p className="mt-2 text-2xl font-semibold">{value}</p>
             </div>
@@ -148,7 +148,7 @@ export function DashboardPage() {
         </section>
 
         <section className="grid gap-6 xl:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)]">
-          <div className="rounded-lg border bg-background">
+          <div className="rounded-xl border bg-card/70">
             <div className="border-b px-4 py-3">
               <h2 className="font-semibold">Funil por etapa</h2>
             </div>
@@ -173,14 +173,14 @@ export function DashboardPage() {
                   </div>
                 ))
               ) : (
-                <p className="text-sm text-muted-foreground">Sem deals no funil.</p>
+                <p className="text-sm text-muted-foreground">Sem oportunidades no funil.</p>
               )}
             </div>
           </div>
 
-          <div className="rounded-lg border bg-background">
+          <div className="rounded-xl border bg-card/70">
             <div className="border-b px-4 py-3">
-              <h2 className="font-semibold">Forecast</h2>
+              <h2 className="font-semibold">Previsao de receita</h2>
             </div>
             <div className="divide-y">
               {forecast.length === 0 ? (
@@ -198,9 +198,9 @@ export function DashboardPage() {
         </section>
 
         <section className="grid gap-6 xl:grid-cols-2">
-          <div className="rounded-lg border bg-background">
+          <div className="rounded-xl border bg-card/70">
             <div className="border-b px-4 py-3">
-              <h2 className="font-semibold">Performance por vendedor</h2>
+              <h2 className="font-semibold">Performance por consultor</h2>
             </div>
             <div className="divide-y">
               {performance.length === 0 ? (
@@ -221,7 +221,7 @@ export function DashboardPage() {
             </div>
           </div>
 
-          <div className="rounded-lg border bg-background">
+          <div className="rounded-xl border bg-card/70">
             <div className="border-b px-4 py-3">
               <h2 className="font-semibold">Atividades recentes</h2>
             </div>

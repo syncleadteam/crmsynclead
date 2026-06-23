@@ -24,7 +24,7 @@ export async function GET(request: Request, context: RouteContext) {
     .single();
 
   if (error) {
-    return apiError("not_found", "Deal nao encontrado.", 404);
+    return apiError("not_found", "Oportunidade nao encontrada.", 404);
   }
 
   return apiData(data);
@@ -55,7 +55,7 @@ export async function PATCH(request: Request, context: RouteContext) {
     .single();
 
   if (currentError || !current) {
-    return apiError("not_found", "Deal nao encontrado.", 404);
+    return apiError("not_found", "Oportunidade nao encontrada.", 404);
   }
 
   const nextPipelineId = parsed.data.pipeline_id ?? current.pipeline_id;
@@ -95,7 +95,7 @@ export async function PATCH(request: Request, context: RouteContext) {
     .single();
 
   if (error) {
-    return apiError("bad_request", "Nao foi possivel atualizar deal.", 400, error.message);
+    return apiError("bad_request", "Nao foi possivel atualizar oportunidade.", 400, error.message);
   }
 
   return apiData(data);
@@ -117,7 +117,7 @@ export async function DELETE(request: Request, context: RouteContext) {
     .single();
 
   if (error) {
-    return apiError("bad_request", "Nao foi possivel excluir deal.", 400, error.message);
+    return apiError("bad_request", "Nao foi possivel excluir oportunidade.", 400, error.message);
   }
 
   return apiData(data);

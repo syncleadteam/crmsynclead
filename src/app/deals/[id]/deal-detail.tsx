@@ -77,7 +77,7 @@ export function DealDetail({ id }: { id: string }) {
       setError(
         requestError instanceof Error
           ? requestError.message
-          : "Nao foi possivel carregar deal.",
+          : "Nao foi possivel carregar a oportunidade.",
       );
     } finally {
       setIsLoading(false);
@@ -147,14 +147,14 @@ export function DealDetail({ id }: { id: string }) {
   return (
     <AppShell>
       <div className="grid w-full gap-6 px-4 py-6 lg:grid-cols-[minmax(0,1fr)_380px] lg:px-8">
-        <section className="rounded-lg border bg-background">
+        <section className="rounded-xl border bg-card/70 shadow-2xl shadow-primary/10 backdrop-blur">
           <header className="flex flex-col gap-3 border-b px-4 py-4 md:flex-row md:items-center md:justify-between">
             <div>
               <Button asChild size="sm" variant="link" className="h-auto px-0">
-                <Link href="/deals">Voltar</Link>
+                <Link href="/deals">Voltar para oportunidades</Link>
               </Button>
               <h1 className="mt-2 text-2xl font-semibold tracking-tight">
-                {deal?.title ?? "Detalhe do deal"}
+                {deal?.title ?? "Detalhe da oportunidade"}
               </h1>
             </div>
             <Button
@@ -187,7 +187,7 @@ export function DealDetail({ id }: { id: string }) {
                     <p className="font-medium">R$ {deal.value.toLocaleString("pt-BR")}</p>
                   </div>
                   <div className="rounded-md border p-3">
-                    <p className="text-sm text-muted-foreground">Empresa</p>
+                    <p className="text-sm text-muted-foreground">Conta</p>
                     <p className="font-medium">{deal.company?.name ?? "-"}</p>
                   </div>
                   <div className="rounded-md border p-3">
@@ -259,14 +259,14 @@ export function DealDetail({ id }: { id: string }) {
                 </div>
               </>
             ) : (
-              <p className="text-sm text-muted-foreground">Deal nao encontrado.</p>
+              <p className="text-sm text-muted-foreground">Oportunidade nao encontrada.</p>
             )}
           </div>
         </section>
 
         <aside className="grid gap-4">
-          <form onSubmit={addProduct} className="rounded-lg border bg-background p-4">
-            <h2 className="font-semibold">Adicionar produto</h2>
+          <form onSubmit={addProduct} className="rounded-xl border bg-card/70 p-4">
+            <h2 className="font-semibold">Adicionar produto da solucao</h2>
             <div className="mt-4 grid gap-3">
               <label className="grid gap-1.5 text-sm font-medium">
                 Produto
@@ -302,7 +302,7 @@ export function DealDetail({ id }: { id: string }) {
             </div>
           </form>
 
-          <form onSubmit={createProposal} className="rounded-lg border bg-background p-4">
+          <form onSubmit={createProposal} className="rounded-xl border bg-card/70 p-4">
             <h2 className="font-semibold">Nova proposta</h2>
             <div className="mt-4 grid gap-3">
               <label className="grid gap-1.5 text-sm font-medium">

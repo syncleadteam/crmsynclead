@@ -4,8 +4,8 @@ export default function CompaniesPage() {
   return (
     <EntityList
       kind="companies"
-      title="Empresas"
-      description="Contas B2B associadas a contatos e leads."
+      title="Contas"
+      description="Marcas e negocios atendidos ou em conversa com a SyncLead."
       fields={[
         { name: "name", label: "Nome", required: true },
         { name: "document_number", label: "Documento" },
@@ -15,7 +15,7 @@ export default function CompaniesPage() {
         { key: "name", label: "Nome" },
         { key: "document_number", label: "Documento" },
         { key: "segment", label: "Segmento" },
-        { key: "owner.full_name", label: "Owner" },
+        { key: "owner.full_name", label: "Consultor" },
       ]}
     />
   );

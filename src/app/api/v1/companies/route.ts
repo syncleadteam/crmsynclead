@@ -27,7 +27,7 @@ export async function GET(request: Request) {
   const { data, error } = await query;
 
   if (error) {
-    return apiError("bad_request", "Nao foi possivel listar empresas.", 400, error.message);
+    return apiError("bad_request", "Nao foi possivel listar contas.", 400, error.message);
   }
 
   return apiData(data);
@@ -58,7 +58,7 @@ export async function POST(request: Request) {
     .single();
 
   if (error) {
-    return apiError("bad_request", "Nao foi possivel criar empresa.", 400, error.message);
+    return apiError("bad_request", "Nao foi possivel criar conta.", 400, error.message);
   }
 
   return apiData(data, { status: 201 });

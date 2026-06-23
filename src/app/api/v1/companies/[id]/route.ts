@@ -23,7 +23,7 @@ export async function GET(request: Request, context: RouteContext) {
     .single();
 
   if (error) {
-    return apiError("not_found", "Empresa nao encontrada.", 404);
+    return apiError("not_found", "Conta nao encontrada.", 404);
   }
 
   return apiData(data);
@@ -61,7 +61,7 @@ export async function PATCH(request: Request, context: RouteContext) {
     .single();
 
   if (error) {
-    return apiError("bad_request", "Nao foi possivel atualizar empresa.", 400, error.message);
+    return apiError("bad_request", "Nao foi possivel atualizar conta.", 400, error.message);
   }
 
   return apiData(data);
@@ -83,7 +83,7 @@ export async function DELETE(request: Request, context: RouteContext) {
     .single();
 
   if (error) {
-    return apiError("bad_request", "Nao foi possivel excluir empresa.", 400, error.message);
+    return apiError("bad_request", "Nao foi possivel excluir conta.", 400, error.message);
   }
 
   return apiData(data);

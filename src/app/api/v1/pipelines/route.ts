@@ -15,7 +15,7 @@ export async function GET(request: Request) {
     .order("created_at", { ascending: false });
 
   if (error) {
-    return apiError("bad_request", "Nao foi possivel listar pipelines.", 400, error.message);
+    return apiError("bad_request", "Nao foi possivel listar funis.", 400, error.message);
   }
 
   return apiData(data);
@@ -41,7 +41,7 @@ export async function POST(request: Request) {
     .single();
 
   if (error) {
-    return apiError("bad_request", "Nao foi possivel criar pipeline.", 400, error.message);
+    return apiError("bad_request", "Nao foi possivel criar funil.", 400, error.message);
   }
 
   return apiData(data, { status: 201 });

@@ -82,7 +82,7 @@ export function PipelineBoard() {
       setError(
         requestError instanceof Error
           ? requestError.message
-          : "Nao foi possivel carregar pipeline.",
+          : "Nao foi possivel carregar o funil.",
       );
     } finally {
       setIsLoading(false);
@@ -129,7 +129,7 @@ export function PipelineBoard() {
       setError(
         requestError instanceof Error
           ? requestError.message
-          : "Nao foi possivel mover deal.",
+          : "Nao foi possivel mover a oportunidade.",
       );
     }
   }
@@ -145,9 +145,9 @@ export function PipelineBoard() {
       <div className="flex w-full flex-col gap-6 px-4 py-6 lg:px-8">
         <header className="flex flex-col gap-3 border-b pb-5 md:flex-row md:items-center md:justify-between">
           <div>
-            <p className="text-sm font-medium text-muted-foreground">Pipeline</p>
+            <p className="text-sm font-medium text-primary">Funil</p>
             <h1 className="text-2xl font-semibold tracking-tight">
-              Kanban de deals
+              Oportunidades de automacao
             </h1>
           </div>
           <div className="flex flex-wrap gap-2">
@@ -183,7 +183,7 @@ export function PipelineBoard() {
         <section className="flex gap-4 overflow-x-auto pb-3">
           {isLoading ? (
             <div className="rounded-lg border bg-background p-4 text-sm text-muted-foreground">
-              Carregando board...
+              Carregando funil...
             </div>
           ) : stages.length === 0 ? (
             <div className="rounded-lg border bg-background p-4 text-sm text-muted-foreground">
@@ -197,7 +197,7 @@ export function PipelineBoard() {
               return (
                 <article
                   key={stage.id}
-                  className="flex min-h-[520px] w-[300px] shrink-0 flex-col rounded-lg border bg-background"
+                  className="flex min-h-[520px] w-[300px] shrink-0 flex-col rounded-xl border bg-card/70"
                 >
                   <header className="border-b p-3">
                     <div className="flex items-center justify-between gap-3">
@@ -213,11 +213,11 @@ export function PipelineBoard() {
                   <div className="grid gap-3 p-3">
                     {stageDeals.length === 0 ? (
                       <div className="rounded-md border border-dashed p-3 text-sm text-muted-foreground">
-                        Sem deals nesta etapa.
+                        Sem oportunidades nesta etapa.
                       </div>
                     ) : (
                       stageDeals.map((deal) => (
-                        <div key={deal.id} className="rounded-md border p-3">
+                        <div key={deal.id} className="rounded-md border bg-background/40 p-3">
                           <Link
                             href={`/deals/${deal.id}`}
                             className="font-medium hover:underline"

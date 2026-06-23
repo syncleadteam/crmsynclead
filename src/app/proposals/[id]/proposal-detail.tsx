@@ -71,11 +71,11 @@ export function ProposalDetail({ id }: { id: string }) {
   return (
     <AppShell>
       <div className="w-full px-4 py-6 lg:px-8">
-        <section className="rounded-lg border bg-background">
+        <section className="rounded-xl border bg-card/70 shadow-2xl shadow-primary/10 backdrop-blur">
           <header className="flex flex-col gap-3 border-b px-4 py-4 md:flex-row md:items-center md:justify-between">
             <div>
               <Button asChild size="sm" variant="link" className="h-auto px-0">
-                <Link href="/proposals">Voltar</Link>
+                <Link href="/proposals">Voltar para propostas</Link>
               </Button>
               <h1 className="mt-2 text-2xl font-semibold tracking-tight">
                 Detalhe da proposta
@@ -112,7 +112,7 @@ export function ProposalDetail({ id }: { id: string }) {
             ) : proposal ? (
               <>
                 {Object.entries(proposal).map(([key, value]) => (
-                  <div key={key} className="grid gap-1 rounded-md border p-3 md:grid-cols-[180px_minmax(0,1fr)]">
+                  <div key={key} className="grid gap-1 rounded-md border bg-background/40 p-3 md:grid-cols-[180px_minmax(0,1fr)]">
                     <dt className="text-sm font-medium text-muted-foreground">{key}</dt>
                     <dd className="break-words text-sm">{String(value ?? "-")}</dd>
                   </div>

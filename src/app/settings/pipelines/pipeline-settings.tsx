@@ -50,7 +50,7 @@ export function PipelineSettings() {
       setError(
         requestError instanceof Error
           ? requestError.message
-          : "Nao foi possivel carregar pipelines.",
+          : "Nao foi possivel carregar os funis.",
       );
     } finally {
       setIsLoading(false);
@@ -76,7 +76,7 @@ export function PipelineSettings() {
       setError(
         requestError instanceof Error
           ? requestError.message
-          : "Nao foi possivel criar pipeline.",
+          : "Nao foi possivel criar o funil.",
       );
     }
   }
@@ -85,7 +85,7 @@ export function PipelineSettings() {
     event.preventDefault();
 
     if (!stagePipelineId) {
-      setError("Selecione um pipeline para criar a etapa.");
+      setError("Selecione um funil para criar a etapa.");
       return;
     }
 
@@ -122,12 +122,12 @@ export function PipelineSettings() {
   return (
     <AppShell>
       <div className="grid w-full gap-6 px-4 py-6 lg:grid-cols-[minmax(0,1fr)_380px] lg:px-8">
-        <section className="rounded-lg border bg-background">
+        <section className="rounded-xl border bg-card/70 shadow-2xl shadow-primary/10 backdrop-blur">
           <header className="flex flex-col gap-3 border-b px-4 py-4 md:flex-row md:items-center md:justify-between">
             <div>
-              <p className="text-sm font-medium text-muted-foreground">Settings</p>
+              <p className="text-sm font-medium text-primary">Configuracao</p>
               <h1 className="text-2xl font-semibold tracking-tight">
-                Pipelines e etapas
+                Funis e etapas
               </h1>
             </div>
             <Button
@@ -150,11 +150,11 @@ export function PipelineSettings() {
               <p className="p-4 text-sm text-muted-foreground">Carregando...</p>
             ) : pipelines.length === 0 ? (
               <p className="p-4 text-sm text-muted-foreground">
-                Nenhum pipeline configurado.
+                Nenhum funil configurado.
               </p>
             ) : (
               pipelines.map((pipeline) => (
-                <article key={pipeline.id} className="p-4">
+                <article key={pipeline.id} className="rounded-xl border bg-background/40 p-4">
                   <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
                     <div>
                       <h2 className="font-semibold">{pipeline.name}</h2>
@@ -195,8 +195,8 @@ export function PipelineSettings() {
         </section>
 
         <aside className="grid gap-4">
-          <form onSubmit={createPipeline} className="rounded-lg border bg-background p-4">
-            <h2 className="font-semibold">Novo pipeline</h2>
+          <form onSubmit={createPipeline} className="rounded-xl border bg-card/70 p-4">
+            <h2 className="font-semibold">Novo funil</h2>
             <div className="mt-4 grid gap-3">
               <label className="grid gap-1.5 text-sm font-medium">
                 Nome
@@ -217,16 +217,16 @@ export function PipelineSettings() {
               </label>
               <Button type="submit">
                 <Plus />
-                Criar pipeline
+                Criar funil
               </Button>
             </div>
           </form>
 
-          <form onSubmit={createStage} className="rounded-lg border bg-background p-4">
+          <form onSubmit={createStage} className="rounded-xl border bg-card/70 p-4">
             <h2 className="font-semibold">Nova etapa</h2>
             <div className="mt-4 grid gap-3">
               <label className="grid gap-1.5 text-sm font-medium">
-                Pipeline
+                Funil
                 <select
                   className="h-9 rounded-md border border-input bg-background px-3 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   value={stagePipelineId}
