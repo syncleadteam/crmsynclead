@@ -1,6 +1,6 @@
-import { requireAuth } from "@/lib/api/auth";
 import { createActivity } from "@/lib/api/deals";
 import { apiData, apiError, validationError } from "@/lib/api/errors";
+import { requirePermission } from "@/lib/api/permissions";
 import { resolveOwnerId } from "@/lib/api/ownership";
 import { updateTaskSchema } from "@/lib/api/schemas";
 import { assertRelatedEntityExists, withOverdue } from "@/lib/api/tasks";
@@ -10,7 +10,7 @@ type RouteContext = {
 };
 
 export async function GET(request: Request, context: RouteContext) {
-  const auth = await requireAuth(request);
+  const auth = await requirePermission(request, "tasks", "view");
 
   if (!auth.ok) {
     return auth.response;
@@ -31,7 +31,7 @@ export async function GET(request: Request, context: RouteContext) {
 }
 
 export async function PATCH(request: Request, context: RouteContext) {
-  const auth = await requireAuth(request);
+  const auth = await requirePermission(request, "tasks", "update");
 
   if (!auth.ok) {
     return auth.response;
@@ -114,7 +114,7 @@ export async function PATCH(request: Request, context: RouteContext) {
 }
 
 export async function DELETE(request: Request, context: RouteContext) {
-  const auth = await requireAuth(request);
+  const auth = await requirePermission(request, "tasks", "delete");
 
   if (!auth.ok) {
     return auth.response;

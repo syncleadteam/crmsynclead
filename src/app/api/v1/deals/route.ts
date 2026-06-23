@@ -1,6 +1,6 @@
-import { requireAuth } from "@/lib/api/auth";
 import { deriveDealStatus, getPipelineStage, validateDealStatusForStage } from "@/lib/api/deals";
 import { apiData, apiError, validationError } from "@/lib/api/errors";
+import { requirePermission } from "@/lib/api/permissions";
 import { listLimit, resolveOwnerId } from "@/lib/api/ownership";
 import { createDealSchema } from "@/lib/api/schemas";
 import type { Database } from "@/types/supabase";
@@ -14,7 +14,7 @@ function isDealStatus(value: string): value is DealStatus {
 }
 
 export async function GET(request: Request) {
-  const auth = await requireAuth(request);
+  const auth = await requirePermission(request, "deals", "view");
 
   if (!auth.ok) {
     return auth.response;
@@ -54,7 +54,7 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-  const auth = await requireAuth(request);
+  const auth = await requirePermission(request, "deals", "create");
 
   if (!auth.ok) {
     return auth.response;

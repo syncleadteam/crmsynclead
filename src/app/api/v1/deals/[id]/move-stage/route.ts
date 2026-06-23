@@ -1,4 +1,3 @@
-import { requireAuth } from "@/lib/api/auth";
 import {
   createActivity,
   dealStageMetadata,
@@ -7,6 +6,7 @@ import {
   validateDealStatusForStage,
 } from "@/lib/api/deals";
 import { apiData, apiError, validationError } from "@/lib/api/errors";
+import { requirePermission } from "@/lib/api/permissions";
 import { moveDealStageSchema } from "@/lib/api/schemas";
 
 type RouteContext = {
@@ -14,7 +14,7 @@ type RouteContext = {
 };
 
 export async function POST(request: Request, context: RouteContext) {
-  const auth = await requireAuth(request);
+  const auth = await requirePermission(request, "deals", "update");
 
   if (!auth.ok) {
     return auth.response;

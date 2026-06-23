@@ -1,5 +1,5 @@
-import { requireAuth } from "@/lib/api/auth";
 import { apiData, apiError, validationError } from "@/lib/api/errors";
+import { requirePermission } from "@/lib/api/permissions";
 import { createDealProductSchema } from "@/lib/api/schemas";
 
 type RouteContext = {
@@ -7,7 +7,7 @@ type RouteContext = {
 };
 
 export async function GET(request: Request, context: RouteContext) {
-  const auth = await requireAuth(request);
+  const auth = await requirePermission(request, "deals", "view");
 
   if (!auth.ok) {
     return auth.response;
@@ -28,7 +28,7 @@ export async function GET(request: Request, context: RouteContext) {
 }
 
 export async function POST(request: Request, context: RouteContext) {
-  const auth = await requireAuth(request);
+  const auth = await requirePermission(request, "deals", "update");
 
   if (!auth.ok) {
     return auth.response;
@@ -71,7 +71,7 @@ export async function POST(request: Request, context: RouteContext) {
 }
 
 export async function DELETE(request: Request, context: RouteContext) {
-  const auth = await requireAuth(request);
+  const auth = await requirePermission(request, "deals", "update");
 
   if (!auth.ok) {
     return auth.response;

@@ -1,5 +1,5 @@
-import { requireAuth } from "@/lib/api/auth";
 import { apiData, apiError, validationError } from "@/lib/api/errors";
+import { requirePermission } from "@/lib/api/permissions";
 import { listLimit } from "@/lib/api/ownership";
 import { createProposalSchema } from "@/lib/api/schemas";
 import type { Database, Json } from "@/types/supabase";
@@ -13,7 +13,7 @@ function isProposalStatus(value: string): value is ProposalStatus {
 }
 
 export async function GET(request: Request) {
-  const auth = await requireAuth(request);
+  const auth = await requirePermission(request, "proposals", "view");
 
   if (!auth.ok) {
     return auth.response;
@@ -47,7 +47,7 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-  const auth = await requireAuth(request);
+  const auth = await requirePermission(request, "proposals", "create");
 
   if (!auth.ok) {
     return auth.response;

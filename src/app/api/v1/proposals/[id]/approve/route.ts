@@ -1,13 +1,13 @@
-import { requireAuth } from "@/lib/api/auth";
 import { writeAuditLog } from "@/lib/api/audit";
 import { apiData, apiError } from "@/lib/api/errors";
+import { requirePermission } from "@/lib/api/permissions";
 
 type RouteContext = {
   params: Promise<{ id: string }>;
 };
 
 export async function POST(request: Request, context: RouteContext) {
-  const auth = await requireAuth(request);
+  const auth = await requirePermission(request, "proposals", "approve");
 
   if (!auth.ok) {
     return auth.response;

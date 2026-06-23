@@ -1,5 +1,5 @@
-import { requireAuth, requireRole } from "@/lib/api/auth";
 import { apiData, apiError, validationError } from "@/lib/api/errors";
+import { requirePermission } from "@/lib/api/permissions";
 import { updateProductSchema } from "@/lib/api/schemas";
 
 type RouteContext = {
@@ -7,7 +7,7 @@ type RouteContext = {
 };
 
 export async function GET(request: Request, context: RouteContext) {
-  const auth = await requireAuth(request);
+  const auth = await requirePermission(request, "products", "view");
 
   if (!auth.ok) {
     return auth.response;
@@ -28,7 +28,7 @@ export async function GET(request: Request, context: RouteContext) {
 }
 
 export async function PATCH(request: Request, context: RouteContext) {
-  const auth = await requireRole(request, ["admin"]);
+  const auth = await requirePermission(request, "products", "update");
 
   if (!auth.ok) {
     return auth.response;
@@ -62,7 +62,7 @@ export async function PATCH(request: Request, context: RouteContext) {
 }
 
 export async function DELETE(request: Request, context: RouteContext) {
-  const auth = await requireRole(request, ["admin"]);
+  const auth = await requirePermission(request, "products", "delete");
 
   if (!auth.ok) {
     return auth.response;

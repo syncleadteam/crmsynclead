@@ -1,6 +1,6 @@
-import { requireAuth } from "@/lib/api/auth";
 import { deriveDealStatus, getPipelineStage, validateDealStatusForStage } from "@/lib/api/deals";
 import { apiData, apiError, validationError } from "@/lib/api/errors";
+import { requirePermission } from "@/lib/api/permissions";
 import { resolveOwnerId } from "@/lib/api/ownership";
 import { updateDealSchema } from "@/lib/api/schemas";
 
@@ -9,7 +9,7 @@ type RouteContext = {
 };
 
 export async function GET(request: Request, context: RouteContext) {
-  const auth = await requireAuth(request);
+  const auth = await requirePermission(request, "deals", "view");
 
   if (!auth.ok) {
     return auth.response;
@@ -31,7 +31,7 @@ export async function GET(request: Request, context: RouteContext) {
 }
 
 export async function PATCH(request: Request, context: RouteContext) {
-  const auth = await requireAuth(request);
+  const auth = await requirePermission(request, "deals", "update");
 
   if (!auth.ok) {
     return auth.response;
@@ -102,7 +102,7 @@ export async function PATCH(request: Request, context: RouteContext) {
 }
 
 export async function DELETE(request: Request, context: RouteContext) {
-  const auth = await requireAuth(request);
+  const auth = await requirePermission(request, "deals", "delete");
 
   if (!auth.ok) {
     return auth.response;

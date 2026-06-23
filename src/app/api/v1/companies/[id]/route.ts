@@ -1,5 +1,5 @@
-import { requireAuth } from "@/lib/api/auth";
 import { apiData, apiError, validationError } from "@/lib/api/errors";
+import { requirePermission } from "@/lib/api/permissions";
 import { resolveOwnerId } from "@/lib/api/ownership";
 import { updateCompanySchema } from "@/lib/api/schemas";
 
@@ -8,7 +8,7 @@ type RouteContext = {
 };
 
 export async function GET(request: Request, context: RouteContext) {
-  const auth = await requireAuth(request);
+  const auth = await requirePermission(request, "companies", "view");
 
   if (!auth.ok) {
     return auth.response;
@@ -30,7 +30,7 @@ export async function GET(request: Request, context: RouteContext) {
 }
 
 export async function PATCH(request: Request, context: RouteContext) {
-  const auth = await requireAuth(request);
+  const auth = await requirePermission(request, "companies", "update");
 
   if (!auth.ok) {
     return auth.response;
@@ -68,7 +68,7 @@ export async function PATCH(request: Request, context: RouteContext) {
 }
 
 export async function DELETE(request: Request, context: RouteContext) {
-  const auth = await requireAuth(request);
+  const auth = await requirePermission(request, "companies", "delete");
 
   if (!auth.ok) {
     return auth.response;

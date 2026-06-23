@@ -1,5 +1,5 @@
-import { requireAuth, requireRole } from "@/lib/api/auth";
 import { apiData, apiError, validationError } from "@/lib/api/errors";
+import { requirePermission } from "@/lib/api/permissions";
 import { createPipelineStageSchema } from "@/lib/api/schemas";
 
 type RouteContext = {
@@ -7,7 +7,7 @@ type RouteContext = {
 };
 
 export async function GET(request: Request, context: RouteContext) {
-  const auth = await requireAuth(request);
+  const auth = await requirePermission(request, "pipelines", "view");
 
   if (!auth.ok) {
     return auth.response;
@@ -28,7 +28,7 @@ export async function GET(request: Request, context: RouteContext) {
 }
 
 export async function POST(request: Request, context: RouteContext) {
-  const auth = await requireRole(request, ["admin"]);
+  const auth = await requirePermission(request, "pipelines", "create");
 
   if (!auth.ok) {
     return auth.response;

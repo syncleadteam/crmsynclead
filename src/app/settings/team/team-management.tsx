@@ -6,6 +6,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { AppShell } from "@/components/crm/app-nav";
 import { roleLabels, type UserRole } from "@/lib/auth/roles";
+import { permissionActions, permissionModules, rolePermissions } from "@/lib/auth/permissions";
 import { createBrowserSupabaseClient } from "@/lib/supabase/browser";
 
 type CrmUser = {
@@ -31,6 +32,29 @@ type Team = {
   manager_id: string | null;
   manager: CrmUser | null;
   team_members: TeamMember[];
+};
+
+const moduleLabels: Record<(typeof permissionModules)[number], string> = {
+  dashboard: "Visao geral",
+  companies: "Contas",
+  contacts: "Contatos",
+  leads: "Leads",
+  deals: "Oportunidades",
+  tasks: "Agenda",
+  products: "Catalogo",
+  proposals: "Propostas",
+  pipelines: "Funis",
+  automations: "Automacoes",
+  team: "Equipe",
+};
+
+const actionLabels: Record<(typeof permissionActions)[number], string> = {
+  view: "Ver",
+  create: "Criar",
+  update: "Editar",
+  delete: "Excluir",
+  manage: "Gerir",
+  approve: "Aprovar",
 };
 
 async function getAccessToken() {
@@ -231,6 +255,48 @@ export function TeamManagement() {
                 ))
               )}
             </div>
+          </div>
+        </section>
+
+        <section className="overflow-hidden rounded-xl border bg-card/70">
+          <div className="border-b px-4 py-3">
+            <p className="text-sm font-medium text-primary">Permissoes por modulo</p>
+            <h2 className="font-semibold">Matriz de acesso</h2>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-sm">
+              <thead className="border-b bg-muted/60 text-xs uppercase text-muted-foreground">
+                <tr>
+                  <th className="px-4 py-3 font-medium">Papel</th>
+                  <th className="px-4 py-3 font-medium">Modulo</th>
+                  {permissionActions.map((action) => (
+                    <th key={action} className="px-4 py-3 font-medium">
+                      {actionLabels[action]}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {(Object.keys(roleLabels) as UserRole[]).flatMap((role) =>
+                  permissionModules.map((module) => (
+                    <tr key={`${role}-${module}`} className="border-b last:border-0">
+                      <td className="px-4 py-3 font-medium">{roleLabels[role]}</td>
+                      <td className="px-4 py-3 text-muted-foreground">{moduleLabels[module]}</td>
+                      {permissionActions.map((action) => {
+                        const allowed = Boolean(rolePermissions[role][module][action]);
+                        return (
+                          <td key={action} className="px-4 py-3">
+                            <span className={allowed ? "text-accent-cyan" : "text-muted-foreground/50"}>
+                              {allowed ? "Sim" : "-"}
+                            </span>
+                          </td>
+                        );
+                      })}
+                    </tr>
+                  )),
+                )}
+              </tbody>
+            </table>
           </div>
         </section>
       </div>

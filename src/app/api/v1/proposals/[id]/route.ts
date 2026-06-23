@@ -1,6 +1,6 @@
-import { requireAuth } from "@/lib/api/auth";
 import { writeAuditLog } from "@/lib/api/audit";
 import { apiData, apiError, validationError } from "@/lib/api/errors";
+import { requirePermission } from "@/lib/api/permissions";
 import { updateProposalSchema } from "@/lib/api/schemas";
 import type { Json } from "@/types/supabase";
 
@@ -9,7 +9,7 @@ type RouteContext = {
 };
 
 export async function GET(request: Request, context: RouteContext) {
-  const auth = await requireAuth(request);
+  const auth = await requirePermission(request, "proposals", "view");
 
   if (!auth.ok) {
     return auth.response;
@@ -30,7 +30,7 @@ export async function GET(request: Request, context: RouteContext) {
 }
 
 export async function PATCH(request: Request, context: RouteContext) {
-  const auth = await requireAuth(request);
+  const auth = await requirePermission(request, "proposals", "update");
 
   if (!auth.ok) {
     return auth.response;

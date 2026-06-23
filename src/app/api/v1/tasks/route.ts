@@ -1,6 +1,6 @@
-import { requireAuth } from "@/lib/api/auth";
 import { createActivity } from "@/lib/api/deals";
 import { apiData, apiError, validationError } from "@/lib/api/errors";
+import { requirePermission } from "@/lib/api/permissions";
 import { listLimit, resolveOwnerId } from "@/lib/api/ownership";
 import { createTaskSchema } from "@/lib/api/schemas";
 import { assertRelatedEntityExists, withOverdue } from "@/lib/api/tasks";
@@ -27,7 +27,7 @@ function isRelatedEntityType(value: string): value is RelatedEntityType {
 }
 
 export async function GET(request: Request) {
-  const auth = await requireAuth(request);
+  const auth = await requirePermission(request, "tasks", "view");
 
   if (!auth.ok) {
     return auth.response;
@@ -71,7 +71,7 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-  const auth = await requireAuth(request);
+  const auth = await requirePermission(request, "tasks", "create");
 
   if (!auth.ok) {
     return auth.response;

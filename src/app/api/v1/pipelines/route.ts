@@ -1,9 +1,9 @@
-import { requireAuth, requireRole } from "@/lib/api/auth";
 import { apiData, apiError, validationError } from "@/lib/api/errors";
+import { requirePermission } from "@/lib/api/permissions";
 import { createPipelineSchema } from "@/lib/api/schemas";
 
 export async function GET(request: Request) {
-  const auth = await requireAuth(request);
+  const auth = await requirePermission(request, "pipelines", "view");
 
   if (!auth.ok) {
     return auth.response;
@@ -22,7 +22,7 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-  const auth = await requireRole(request, ["admin"]);
+  const auth = await requirePermission(request, "pipelines", "create");
 
   if (!auth.ok) {
     return auth.response;

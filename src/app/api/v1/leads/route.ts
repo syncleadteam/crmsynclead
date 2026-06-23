@@ -1,5 +1,5 @@
-import { requireAuth } from "@/lib/api/auth";
 import { apiData, apiError, validationError } from "@/lib/api/errors";
+import { requirePermission } from "@/lib/api/permissions";
 import { listLimit, resolveOwnerId } from "@/lib/api/ownership";
 import { createLeadSchema } from "@/lib/api/schemas";
 import type { Database } from "@/types/supabase";
@@ -19,7 +19,7 @@ function isLeadStatus(value: string): value is LeadStatus {
 }
 
 export async function GET(request: Request) {
-  const auth = await requireAuth(request);
+  const auth = await requirePermission(request, "leads", "view");
 
   if (!auth.ok) {
     return auth.response;
@@ -49,7 +49,7 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-  const auth = await requireAuth(request);
+  const auth = await requirePermission(request, "leads", "create");
 
   if (!auth.ok) {
     return auth.response;

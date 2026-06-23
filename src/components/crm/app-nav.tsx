@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import type { ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import {
   BarChart3,
   Building2,
@@ -17,25 +17,40 @@ import {
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { GlobalSearch } from "@/components/crm/global-search";
+import { crmFetch } from "@/components/crm/client-api";
+import type { PermissionMatrix, PermissionModule } from "@/lib/auth/permissions";
 
-const navItems = [
-  { href: "/dashboard", label: "Visao geral", icon: BarChart3 },
-  { href: "/pipeline", label: "Funil", icon: KanbanSquare },
-  { href: "/deals", label: "Oportunidades", icon: CircleDollarSign },
-  { href: "/companies", label: "Contas", icon: Building2 },
-  { href: "/contacts", label: "Contatos", icon: Users },
-  { href: "/tasks", label: "Agenda", icon: CalendarCheck },
-  { href: "/settings/landing-products", label: "Catalogo da landing", icon: Package },
-  { href: "/settings/integrations", label: "Automacoes n8n", icon: Workflow },
-  { href: "/settings/team", label: "Equipe", icon: Settings },
+const navItems: Array<{
+  href: string;
+  label: string;
+  icon: typeof BarChart3;
+  module: PermissionModule;
+}> = [
+  { href: "/dashboard", label: "Visao geral", icon: BarChart3, module: "dashboard" },
+  { href: "/pipeline", label: "Funil", icon: KanbanSquare, module: "pipelines" },
+  { href: "/deals", label: "Oportunidades", icon: CircleDollarSign, module: "deals" },
+  { href: "/companies", label: "Contas", icon: Building2, module: "companies" },
+  { href: "/contacts", label: "Contatos", icon: Users, module: "contacts" },
+  { href: "/tasks", label: "Agenda", icon: CalendarCheck, module: "tasks" },
+  { href: "/settings/landing-products", label: "Catalogo da landing", icon: Package, module: "products" },
+  { href: "/settings/integrations", label: "Automacoes n8n", icon: Workflow, module: "automations" },
+  { href: "/settings/team", label: "Equipe", icon: Settings, module: "team" },
 ];
 
 function NavLinks({ compact = false }: { compact?: boolean }) {
   const pathname = usePathname();
+  const [permissions, setPermissions] = useState<PermissionMatrix | null>(null);
+
+  useEffect(() => {
+    crmFetch<{ data: { permissions: PermissionMatrix } }>("/api/v1/me/permissions")
+      .then((payload) => setPermissions(payload.data.permissions))
+      .catch(() => setPermissions(null));
+  }, []);
 
   return (
     <>
-      {navItems.map((item) => {
+      {navItems.filter((item) => permissions?.[item.module]?.view ?? true).map((item) => {
         const Icon = item.icon;
         const isActive =
           pathname === item.href || pathname.startsWith(`${item.href}/`);
@@ -77,6 +92,9 @@ export function AppSidebar() {
           </p>
         </div>
         <nav className="grid gap-1 p-3">
+          <div className="mb-2">
+            <GlobalSearch />
+          </div>
           <NavLinks />
         </nav>
       </div>
@@ -89,6 +107,7 @@ export function AppMobileNav() {
     <nav className="border-b border-sidebar-border bg-sidebar lg:hidden">
       <div className="flex items-center gap-3 overflow-x-auto px-4 py-3">
         <Image src="/synclead-logo.png" alt="SyncLead" width={112} height={43} className="h-auto w-24 shrink-0" />
+        <GlobalSearch compact />
         <NavLinks compact />
       </div>
     </nav>
