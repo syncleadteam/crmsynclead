@@ -626,6 +626,10 @@ export type Database = {
           description: string | null
           id: string
           is_active: boolean
+          landing_form_category: string | null
+          landing_form_code: string | null
+          landing_form_position: number
+          landing_form_required_agents: string[]
           name: string
           sku: string | null
           unit_price: number
@@ -636,6 +640,10 @@ export type Database = {
           description?: string | null
           id?: string
           is_active?: boolean
+          landing_form_category?: string | null
+          landing_form_code?: string | null
+          landing_form_position?: number
+          landing_form_required_agents?: string[]
           name: string
           sku?: string | null
           unit_price?: number
@@ -646,6 +654,10 @@ export type Database = {
           description?: string | null
           id?: string
           is_active?: boolean
+          landing_form_category?: string | null
+          landing_form_code?: string | null
+          landing_form_position?: number
+          landing_form_required_agents?: string[]
           name?: string
           sku?: string | null
           unit_price?: number

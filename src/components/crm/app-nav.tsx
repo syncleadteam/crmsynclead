@@ -9,6 +9,7 @@ import {
   CalendarCheck,
   CircleDollarSign,
   KanbanSquare,
+  Package,
   Settings,
   Users,
 } from "lucide-react";
@@ -22,6 +23,7 @@ const navItems = [
   { href: "/companies", label: "Empresas", icon: Building2 },
   { href: "/contacts", label: "Contatos", icon: Users },
   { href: "/tasks", label: "Tarefas", icon: CalendarCheck },
+  { href: "/settings/landing-products", label: "Produtos landing", icon: Package },
   { href: "/settings/team", label: "Settings", icon: Settings },
 ];
 

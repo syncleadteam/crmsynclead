@@ -186,6 +186,10 @@ export const createProductSchema = z.object({
   sku: z.string().trim().min(1).max(80).nullable().optional(),
   unit_price: z.number().min(0).default(0),
   is_active: z.boolean().default(true),
+  landing_form_code: z.string().trim().min(2).max(120).nullable().optional(),
+  landing_form_category: z.enum(["agent", "module"]).nullable().optional(),
+  landing_form_position: z.number().int().min(0).default(0),
+  landing_form_required_agents: z.array(z.string().trim().min(1).max(120)).default([]),
 });
 
 export const updateProductSchema = createProductSchema.partial().extend({
