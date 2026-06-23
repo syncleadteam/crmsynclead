@@ -13,6 +13,7 @@ import {
   Package,
   Settings,
   Users,
+  Workflow,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -25,6 +26,7 @@ const navItems = [
   { href: "/contacts", label: "Contatos", icon: Users },
   { href: "/tasks", label: "Agenda", icon: CalendarCheck },
   { href: "/settings/landing-products", label: "Catalogo da landing", icon: Package },
+  { href: "/settings/integrations", label: "Automacoes n8n", icon: Workflow },
   { href: "/settings/team", label: "Equipe", icon: Settings },
 ];
 
