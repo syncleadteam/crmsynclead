@@ -75,6 +75,138 @@ function productTags(item: LandingProduct) {
   ].filter((tag): tag is string => Boolean(tag));
 }
 
+function ProductTable({
+  title,
+  rows,
+  updatingId,
+  patchItem,
+  removeItem,
+}: {
+  title: string;
+  rows: LandingProduct[];
+  updatingId: string | null;
+  patchItem: (id: string, patch: Partial<LandingProduct>) => void;
+  removeItem: (id: string) => void;
+}) {
+  return (
+    <section className="rounded-xl border bg-card/70">
+      <header className="border-b px-4 py-3">
+        <h2 className="font-semibold">{title}</h2>
+      </header>
+      <div className="overflow-x-auto">
+        <table className="w-full text-left text-sm">
+          <thead className="border-b bg-muted/60 text-xs uppercase text-muted-foreground">
+            <tr>
+              <th className="px-4 py-3 font-medium">Produto</th>
+              <th className="px-4 py-3 font-medium">Codigo</th>
+              <th className="px-4 py-3 font-medium">Dependencias</th>
+              <th className="px-4 py-3 font-medium">Tags</th>
+              <th className="px-4 py-3 font-medium">Preco</th>
+              <th className="px-4 py-3 font-medium">Ativo</th>
+              <th className="px-4 py-3 font-medium">Acoes</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.length === 0 ? (
+              <tr>
+                <td className="px-4 py-6 text-muted-foreground" colSpan={7}>
+                  Nenhum produto configurado.
+                </td>
+              </tr>
+            ) : (
+              rows.map((item) => (
+                <tr key={item.id} className="border-b last:border-0">
+                  <td className="px-4 py-3">
+                    <div className="font-medium">{item.name}</div>
+                    <div className="mt-1 max-w-md text-xs text-muted-foreground">{item.description}</div>
+                  </td>
+                  <td className="px-4 py-3">
+                    <div className="font-mono text-xs">{item.landing_form_code}</div>
+                    <div className="mt-1 text-xs text-muted-foreground">{categoryLabel(item.landing_form_category)}</div>
+                  </td>
+                  <td className="px-4 py-3">
+                    {item.landing_form_required_agents.length === 0 ? (
+                      <span className="text-xs text-muted-foreground">Sempre visivel</span>
+                    ) : (
+                      <div className="flex max-w-56 flex-wrap gap-1">
+                        {item.landing_form_required_agents.map((agent) => (
+                          <span key={agent} className="rounded-md border bg-background/50 px-2 py-1 text-xs">
+                            {agentLabel(agent)}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </td>
+                  <td className="px-4 py-3">
+                    <div className="flex max-w-56 flex-wrap gap-1">
+                      {productTags(item).map((tag) => (
+                        <span key={tag} className="rounded-md border bg-background/50 px-2 py-1 text-xs text-muted-foreground">
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  </td>
+                  <td className="px-4 py-3">{brl(item.unit_price)}</td>
+                  <td className="px-4 py-3">
+                    <input
+                      type="checkbox"
+                      checked={item.is_active}
+                      disabled={updatingId === item.id}
+                      onChange={(event) => patchItem(item.id, { is_active: event.target.checked })}
+                      className="size-4"
+                      aria-label={`Ativar ${item.name}`}
+                    />
+                  </td>
+                  <td className="px-4 py-3">
+                    <div className="flex gap-2">
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="outline"
+                        disabled={updatingId === item.id}
+                        onClick={() => {
+                          const nextPrice = window.prompt("Novo preco mensal", String(item.unit_price));
+                          if (nextPrice === null) return;
+                          patchItem(item.id, { unit_price: Number(nextPrice) });
+                        }}
+                      >
+                        Preco
+                      </Button>
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="outline"
+                        disabled={updatingId === item.id}
+                        onClick={() => {
+                          const nextDescription = window.prompt("Descricao comercial", item.description ?? "");
+                          if (nextDescription === null) return;
+                          patchItem(item.id, { description: nextDescription });
+                        }}
+                      >
+                        Texto
+                      </Button>
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="destructive"
+                        disabled={updatingId === item.id}
+                        onClick={() => removeItem(item.id)}
+                      >
+                        <Trash2 />
+                        Remover
+                      </Button>
+                    </div>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  );
+}
+
 export function LandingProductsPage() {
   const [items, setItems] = useState<LandingProduct[]>([]);
   const [form, setForm] = useState<FormState>(initialForm);
@@ -200,126 +332,6 @@ export function LandingProductsPage() {
     }
   }
 
-  function ProductTable({ title, rows }: { title: string; rows: LandingProduct[] }) {
-    return (
-      <section className="rounded-xl border bg-card/70">
-        <header className="border-b px-4 py-3">
-          <h2 className="font-semibold">{title}</h2>
-        </header>
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm">
-            <thead className="border-b bg-muted/60 text-xs uppercase text-muted-foreground">
-              <tr>
-                <th className="px-4 py-3 font-medium">Produto</th>
-                <th className="px-4 py-3 font-medium">Codigo</th>
-                <th className="px-4 py-3 font-medium">Dependencias</th>
-                <th className="px-4 py-3 font-medium">Tags</th>
-                <th className="px-4 py-3 font-medium">Preco</th>
-                <th className="px-4 py-3 font-medium">Ativo</th>
-                <th className="px-4 py-3 font-medium">Acoes</th>
-              </tr>
-            </thead>
-            <tbody>
-              {rows.length === 0 ? (
-                <tr>
-                  <td className="px-4 py-6 text-muted-foreground" colSpan={7}>
-                    Nenhum produto configurado.
-                  </td>
-                </tr>
-              ) : (
-                rows.map((item) => (
-                  <tr key={item.id} className="border-b last:border-0">
-                    <td className="px-4 py-3">
-                      <div className="font-medium">{item.name}</div>
-                      <div className="mt-1 max-w-md text-xs text-muted-foreground">{item.description}</div>
-                    </td>
-                    <td className="px-4 py-3">
-                      <div className="font-mono text-xs">{item.landing_form_code}</div>
-                      <div className="mt-1 text-xs text-muted-foreground">{categoryLabel(item.landing_form_category)}</div>
-                    </td>
-                    <td className="px-4 py-3">
-                      {item.landing_form_required_agents.length === 0 ? (
-                        <span className="text-xs text-muted-foreground">Sempre visivel</span>
-                      ) : (
-                        <div className="flex max-w-56 flex-wrap gap-1">
-                          {item.landing_form_required_agents.map((agent) => (
-                            <span key={agent} className="rounded-md border bg-background/50 px-2 py-1 text-xs">
-                              {agentLabel(agent)}
-                            </span>
-                          ))}
-                        </div>
-                      )}
-                    </td>
-                    <td className="px-4 py-3">
-                      <div className="flex max-w-56 flex-wrap gap-1">
-                        {productTags(item).map((tag) => (
-                          <span key={tag} className="rounded-md border bg-background/50 px-2 py-1 text-xs text-muted-foreground">
-                            {tag}
-                          </span>
-                        ))}
-                      </div>
-                    </td>
-                    <td className="px-4 py-3">{brl(item.unit_price)}</td>
-                    <td className="px-4 py-3">
-                      <input
-                        type="checkbox"
-                        checked={item.is_active}
-                        disabled={updatingId === item.id}
-                        onChange={(event) => void patchItem(item.id, { is_active: event.target.checked })}
-                        className="size-4"
-                        aria-label={`Ativar ${item.name}`}
-                      />
-                    </td>
-                    <td className="px-4 py-3">
-                      <div className="flex gap-2">
-                        <Button
-                          type="button"
-                          size="sm"
-                          variant="outline"
-                          disabled={updatingId === item.id}
-                          onClick={() => {
-                            const nextPrice = window.prompt("Novo preco mensal", String(item.unit_price));
-                            if (nextPrice === null) return;
-                            void patchItem(item.id, { unit_price: Number(nextPrice) });
-                          }}
-                        >
-                          Preco
-                        </Button>
-                        <Button
-                          type="button"
-                          size="sm"
-                          variant="outline"
-                          disabled={updatingId === item.id}
-                          onClick={() => {
-                            const nextDescription = window.prompt("Descricao comercial", item.description ?? "");
-                            if (nextDescription === null) return;
-                            void patchItem(item.id, { description: nextDescription });
-                          }}
-                        >
-                          Texto
-                        </Button>
-                        <Button
-                          type="button"
-                          size="sm"
-                          variant="destructive"
-                          disabled={updatingId === item.id}
-                          onClick={() => void removeItem(item.id)}
-                        >
-                          <Trash2 />
-                          Remover
-                        </Button>
-                      </div>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
-      </section>
-    );
-  }
-
   return (
     <AppShell>
       <div className="grid w-full gap-6 px-4 py-6 lg:grid-cols-[minmax(0,1fr)_380px] lg:px-8">
@@ -404,8 +416,20 @@ export function LandingProductsPage() {
                   {activeCount} itens ativos aparecem no formulario; itens pausados ficam ocultos para o lead.
                 </p>
               </section>
-              <ProductTable title="Agentes" rows={grouped.agents} />
-              <ProductTable title="Modulos" rows={grouped.modules} />
+              <ProductTable
+                title="Agentes"
+                rows={grouped.agents}
+                updatingId={updatingId}
+                patchItem={(id, patch) => void patchItem(id, patch)}
+                removeItem={(id) => void removeItem(id)}
+              />
+              <ProductTable
+                title="Modulos"
+                rows={grouped.modules}
+                updatingId={updatingId}
+                patchItem={(id, patch) => void patchItem(id, patch)}
+                removeItem={(id) => void removeItem(id)}
+              />
             </>
           )}
         </div>

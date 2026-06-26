@@ -45,8 +45,6 @@ export function GlobalSearch({ compact = false }: { compact?: boolean }) {
     const query = term.trim();
 
     if (query.length < 2) {
-      setResults([]);
-      setIsLoading(false);
       return;
     }
 
@@ -87,7 +85,12 @@ export function GlobalSearch({ compact = false }: { compact?: boolean }) {
         <input
           value={term}
           onChange={(event) => {
-            setTerm(event.target.value);
+            const nextTerm = event.target.value;
+            setTerm(nextTerm);
+            if (nextTerm.trim().length < 2) {
+              setResults([]);
+              setIsLoading(false);
+            }
             setIsOpen(true);
           }}
           onFocus={() => setIsOpen(true)}
@@ -110,6 +113,7 @@ export function GlobalSearch({ compact = false }: { compact?: boolean }) {
                   onClick={() => {
                     setIsOpen(false);
                     setTerm("");
+                    setResults([]);
                   }}
                   className="block rounded-lg px-3 py-2 text-sm hover:bg-muted"
                 >
@@ -131,4 +135,3 @@ export function GlobalSearch({ compact = false }: { compact?: boolean }) {
     </div>
   );
 }
-

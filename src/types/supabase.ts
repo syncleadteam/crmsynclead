@@ -96,60 +96,6 @@ export type Database = {
           },
         ]
       }
-      chat_messages: {
-        Row: {
-          active: boolean | null
-          bot_message: string | null
-          created_at: string | null
-          id: number
-          message_type: string | null
-          nomewpp: string | null
-          phone: string | null
-          user_message: string | null
-        }
-        Insert: {
-          active?: boolean | null
-          bot_message?: string | null
-          created_at?: string | null
-          id?: number
-          message_type?: string | null
-          nomewpp?: string | null
-          phone?: string | null
-          user_message?: string | null
-        }
-        Update: {
-          active?: boolean | null
-          bot_message?: string | null
-          created_at?: string | null
-          id?: number
-          message_type?: string | null
-          nomewpp?: string | null
-          phone?: string | null
-          user_message?: string | null
-        }
-        Relationships: []
-      }
-      chats: {
-        Row: {
-          created_at: string | null
-          id: number
-          phone: string | null
-          updated_at: string | null
-        }
-        Insert: {
-          created_at?: string | null
-          id?: number
-          phone?: string | null
-          updated_at?: string | null
-        }
-        Update: {
-          created_at?: string | null
-          id?: number
-          phone?: string | null
-          updated_at?: string | null
-        }
-        Relationships: []
-      }
       companies: {
         Row: {
           created_at: string
@@ -244,33 +190,6 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
-      }
-      dados_cliente: {
-        Row: {
-          atendimento_ia: string | null
-          created_at: string | null
-          id: number
-          nomewpp: string | null
-          setor: string | null
-          telefone: string | null
-        }
-        Insert: {
-          atendimento_ia?: string | null
-          created_at?: string | null
-          id?: number
-          nomewpp?: string | null
-          setor?: string | null
-          telefone?: string | null
-        }
-        Update: {
-          atendimento_ia?: string | null
-          created_at?: string | null
-          id?: number
-          nomewpp?: string | null
-          setor?: string | null
-          telefone?: string | null
-        }
-        Relationships: []
       }
       deal_products: {
         Row: {
@@ -512,42 +431,6 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
-      }
-      n8n_chat_histories: {
-        Row: {
-          id: number
-          message: Json | null
-          session_id: string | null
-        }
-        Insert: {
-          id?: number
-          message?: Json | null
-          session_id?: string | null
-        }
-        Update: {
-          id?: number
-          message?: Json | null
-          session_id?: string | null
-        }
-        Relationships: []
-      }
-      n8n_chat_histories_gerente: {
-        Row: {
-          id: number
-          message: Json | null
-          session_id: string | null
-        }
-        Insert: {
-          id?: number
-          message?: Json | null
-          session_id?: string | null
-        }
-        Update: {
-          id?: number
-          message?: Json | null
-          session_id?: string | null
-        }
-        Relationships: []
       }
       pipeline_stages: {
         Row: {
