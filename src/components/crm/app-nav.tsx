@@ -19,7 +19,10 @@ import {
 import { Button } from "@/components/ui/button";
 import { GlobalSearch } from "@/components/crm/global-search";
 import { crmFetch } from "@/components/crm/client-api";
-import type { PermissionMatrix, PermissionModule } from "@/lib/auth/permissions";
+import type {
+  PermissionMatrix,
+  PermissionModule,
+} from "@/lib/auth/permissions";
 
 const navItems: Array<{
   href: string;
@@ -27,14 +30,39 @@ const navItems: Array<{
   icon: typeof BarChart3;
   module: PermissionModule;
 }> = [
-  { href: "/dashboard", label: "Visao geral", icon: BarChart3, module: "dashboard" },
-  { href: "/pipeline", label: "Funil", icon: KanbanSquare, module: "pipelines" },
-  { href: "/deals", label: "Oportunidades", icon: CircleDollarSign, module: "deals" },
+  {
+    href: "/dashboard",
+    label: "Visão geral",
+    icon: BarChart3,
+    module: "dashboard",
+  },
+  {
+    href: "/pipeline",
+    label: "Funil",
+    icon: KanbanSquare,
+    module: "pipelines",
+  },
+  {
+    href: "/deals",
+    label: "Oportunidades",
+    icon: CircleDollarSign,
+    module: "deals",
+  },
   { href: "/companies", label: "Contas", icon: Building2, module: "companies" },
   { href: "/contacts", label: "Contatos", icon: Users, module: "contacts" },
   { href: "/tasks", label: "Agenda", icon: CalendarCheck, module: "tasks" },
-  { href: "/settings/landing-products", label: "Catalogo da landing", icon: Package, module: "products" },
-  { href: "/settings/integrations", label: "Automacoes n8n", icon: Workflow, module: "automations" },
+  {
+    href: "/settings/landing-products",
+    label: "Catálogo da landing",
+    icon: Package,
+    module: "products",
+  },
+  {
+    href: "/settings/integrations",
+    label: "Automações n8n",
+    icon: Workflow,
+    module: "automations",
+  },
   { href: "/settings/team", label: "Equipe", icon: Settings, module: "team" },
 ];
 
@@ -43,33 +71,41 @@ function NavLinks({ compact = false }: { compact?: boolean }) {
   const [permissions, setPermissions] = useState<PermissionMatrix | null>(null);
 
   useEffect(() => {
-    crmFetch<{ data: { permissions: PermissionMatrix } }>("/api/v1/me/permissions")
+    crmFetch<{ data: { permissions: PermissionMatrix } }>(
+      "/api/v1/me/permissions",
+    )
       .then((payload) => setPermissions(payload.data.permissions))
       .catch(() => setPermissions(null));
   }, []);
 
   return (
     <>
-      {navItems.filter((item) => permissions?.[item.module]?.view ?? true).map((item) => {
-        const Icon = item.icon;
-        const isActive =
-          pathname === item.href || pathname.startsWith(`${item.href}/`);
+      {navItems
+        .filter((item) => permissions?.[item.module]?.view ?? true)
+        .map((item) => {
+          const Icon = item.icon;
+          const isActive =
+            pathname === item.href || pathname.startsWith(`${item.href}/`);
 
-        return (
-          <Button
-            key={item.href}
-            asChild
-            size="sm"
-            variant={isActive ? "secondary" : "ghost"}
-            className={compact ? "shrink-0" : "w-full justify-start text-sidebar-foreground/85 hover:text-sidebar-foreground"}
-          >
-            <Link href={item.href}>
-              <Icon />
-              {item.label}
-            </Link>
-          </Button>
-        );
-      })}
+          return (
+            <Button
+              key={item.href}
+              asChild
+              size="sm"
+              variant={isActive ? "secondary" : "ghost"}
+              className={
+                compact
+                  ? "shrink-0"
+                  : "w-full justify-start text-sidebar-foreground/85 hover:text-sidebar-foreground"
+              }
+            >
+              <Link href={item.href}>
+                <Icon />
+                {item.label}
+              </Link>
+            </Button>
+          );
+        })}
     </>
   );
 }
@@ -106,7 +142,13 @@ export function AppMobileNav() {
   return (
     <nav className="border-b border-sidebar-border bg-sidebar lg:hidden">
       <div className="flex items-center gap-3 overflow-x-auto px-4 py-3">
-        <Image src="/synclead-logo.png" alt="SyncLead" width={112} height={43} className="h-auto w-24 shrink-0" />
+        <Image
+          src="/synclead-logo.png"
+          alt="SyncLead"
+          width={112}
+          height={43}
+          className="h-auto w-24 shrink-0"
+        />
         <GlobalSearch compact />
         <NavLinks compact />
       </div>

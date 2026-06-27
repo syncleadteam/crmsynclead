@@ -1,7 +1,15 @@
 "use client";
 
 import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
-import { Bot, Boxes, Eye, PackagePlus, RefreshCw, Tags, Trash2 } from "lucide-react";
+import {
+  Bot,
+  Boxes,
+  Eye,
+  PackagePlus,
+  RefreshCw,
+  Tags,
+  Trash2,
+} from "lucide-react";
 
 import { AppShell } from "@/components/crm/app-nav";
 import { crmFetch } from "@/components/crm/client-api";
@@ -58,7 +66,7 @@ function brl(value: number) {
 
 function categoryLabel(category: LandingCategory | null) {
   if (category === "agent") return "Agente";
-  if (category === "module") return "Modulo";
+  if (category === "module") return "Módulo";
   return "-";
 }
 
@@ -68,9 +76,9 @@ function agentLabel(code: string) {
 
 function productTags(item: LandingProduct) {
   return [
-    item.landing_form_category === "agent" ? "Agente IA" : "Modulo",
+    item.landing_form_category === "agent" ? "Agente IA" : "Módulo",
     item.is_active ? "Ativo na landing" : "Pausado",
-    item.landing_form_required_agents.length > 0 ? "Com dependencia" : null,
+    item.landing_form_required_agents.length > 0 ? "Com dependência" : null,
     item.unit_price >= 300 ? "Ticket alto" : "Entrada",
   ].filter((tag): tag is string => Boolean(tag));
 }
@@ -99,9 +107,9 @@ function ProductTable({
             <tr>
               <th className="px-4 py-3 font-medium">Produto</th>
               <th className="px-4 py-3 font-medium">Codigo</th>
-              <th className="px-4 py-3 font-medium">Dependencias</th>
+              <th className="px-4 py-3 font-medium">Dependências</th>
               <th className="px-4 py-3 font-medium">Tags</th>
-              <th className="px-4 py-3 font-medium">Preco</th>
+              <th className="px-4 py-3 font-medium">Preço</th>
               <th className="px-4 py-3 font-medium">Ativo</th>
               <th className="px-4 py-3 font-medium">Acoes</th>
             </tr>
@@ -118,19 +126,30 @@ function ProductTable({
                 <tr key={item.id} className="border-b last:border-0">
                   <td className="px-4 py-3">
                     <div className="font-medium">{item.name}</div>
-                    <div className="mt-1 max-w-md text-xs text-muted-foreground">{item.description}</div>
+                    <div className="mt-1 max-w-md text-xs text-muted-foreground">
+                      {item.description}
+                    </div>
                   </td>
                   <td className="px-4 py-3">
-                    <div className="font-mono text-xs">{item.landing_form_code}</div>
-                    <div className="mt-1 text-xs text-muted-foreground">{categoryLabel(item.landing_form_category)}</div>
+                    <div className="font-mono text-xs">
+                      {item.landing_form_code}
+                    </div>
+                    <div className="mt-1 text-xs text-muted-foreground">
+                      {categoryLabel(item.landing_form_category)}
+                    </div>
                   </td>
                   <td className="px-4 py-3">
                     {item.landing_form_required_agents.length === 0 ? (
-                      <span className="text-xs text-muted-foreground">Sempre visivel</span>
+                      <span className="text-xs text-muted-foreground">
+                        Sempre visivel
+                      </span>
                     ) : (
                       <div className="flex max-w-56 flex-wrap gap-1">
                         {item.landing_form_required_agents.map((agent) => (
-                          <span key={agent} className="rounded-md border bg-background/50 px-2 py-1 text-xs">
+                          <span
+                            key={agent}
+                            className="rounded-md border bg-background/50 px-2 py-1 text-xs"
+                          >
                             {agentLabel(agent)}
                           </span>
                         ))}
@@ -140,7 +159,10 @@ function ProductTable({
                   <td className="px-4 py-3">
                     <div className="flex max-w-56 flex-wrap gap-1">
                       {productTags(item).map((tag) => (
-                        <span key={tag} className="rounded-md border bg-background/50 px-2 py-1 text-xs text-muted-foreground">
+                        <span
+                          key={tag}
+                          className="rounded-md border bg-background/50 px-2 py-1 text-xs text-muted-foreground"
+                        >
                           {tag}
                         </span>
                       ))}
@@ -152,7 +174,9 @@ function ProductTable({
                       type="checkbox"
                       checked={item.is_active}
                       disabled={updatingId === item.id}
-                      onChange={(event) => patchItem(item.id, { is_active: event.target.checked })}
+                      onChange={(event) =>
+                        patchItem(item.id, { is_active: event.target.checked })
+                      }
                       className="size-4"
                       aria-label={`Ativar ${item.name}`}
                     />
@@ -165,12 +189,15 @@ function ProductTable({
                         variant="outline"
                         disabled={updatingId === item.id}
                         onClick={() => {
-                          const nextPrice = window.prompt("Novo preco mensal", String(item.unit_price));
+                          const nextPrice = window.prompt(
+                            "Novo preço mensal",
+                            String(item.unit_price),
+                          );
                           if (nextPrice === null) return;
                           patchItem(item.id, { unit_price: Number(nextPrice) });
                         }}
                       >
-                        Preco
+                        Preço
                       </Button>
                       <Button
                         type="button"
@@ -178,7 +205,10 @@ function ProductTable({
                         variant="outline"
                         disabled={updatingId === item.id}
                         onClick={() => {
-                          const nextDescription = window.prompt("Descricao comercial", item.description ?? "");
+                          const nextDescription = window.prompt(
+                            "Descricao comercial",
+                            item.description ?? "",
+                          );
                           if (nextDescription === null) return;
                           patchItem(item.id, { description: nextDescription });
                         }}
@@ -232,7 +262,9 @@ export function LandingProductsPage() {
     setError(null);
 
     try {
-      const payload = await crmFetch<{ data: LandingProduct[] }>("/api/v1/products?landing_form=true&limit=100");
+      const payload = await crmFetch<{ data: LandingProduct[] }>(
+        "/api/v1/products?landing_form=true&limit=100",
+      );
       setItems(
         payload.data.sort(
           (a, b) =>
@@ -246,7 +278,11 @@ export function LandingProductsPage() {
         ),
       );
     } catch (requestError) {
-      setError(requestError instanceof Error ? requestError.message : "Nao foi possivel carregar produtos.");
+      setError(
+        requestError instanceof Error
+          ? requestError.message
+          : "Não foi possível carregar produtos.",
+      );
     } finally {
       setIsLoading(false);
     }
@@ -265,9 +301,12 @@ export function LandingProductsPage() {
   function toggleRequiredAgent(agent: string) {
     setForm((current) => ({
       ...current,
-      landing_form_required_agents: current.landing_form_required_agents.includes(agent)
-        ? current.landing_form_required_agents.filter((item) => item !== agent)
-        : [...current.landing_form_required_agents, agent],
+      landing_form_required_agents:
+        current.landing_form_required_agents.includes(agent)
+          ? current.landing_form_required_agents.filter(
+              (item) => item !== agent,
+            )
+          : [...current.landing_form_required_agents, agent],
     }));
   }
 
@@ -289,13 +328,19 @@ export function LandingProductsPage() {
           landing_form_category: form.landing_form_category,
           landing_form_position: Number(form.landing_form_position),
           landing_form_required_agents:
-            form.landing_form_category === "module" ? form.landing_form_required_agents : [],
+            form.landing_form_category === "module"
+              ? form.landing_form_required_agents
+              : [],
         }),
       });
       setForm(initialForm);
       await load();
     } catch (requestError) {
-      setError(requestError instanceof Error ? requestError.message : "Nao foi possivel criar produto.");
+      setError(
+        requestError instanceof Error
+          ? requestError.message
+          : "Não foi possível criar produto.",
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -312,7 +357,11 @@ export function LandingProductsPage() {
       });
       await load();
     } catch (requestError) {
-      setError(requestError instanceof Error ? requestError.message : "Nao foi possivel atualizar produto.");
+      setError(
+        requestError instanceof Error
+          ? requestError.message
+          : "Não foi possível atualizar produto.",
+      );
     } finally {
       setUpdatingId(null);
     }
@@ -326,7 +375,11 @@ export function LandingProductsPage() {
       await crmFetch(`/api/v1/products/${id}`, { method: "DELETE" });
       await load();
     } catch (requestError) {
-      setError(requestError instanceof Error ? requestError.message : "Nao foi possivel remover produto.");
+      setError(
+        requestError instanceof Error
+          ? requestError.message
+          : "Não foi possível remover produto.",
+      );
     } finally {
       setUpdatingId(null);
     }
@@ -338,12 +391,20 @@ export function LandingProductsPage() {
         <div className="space-y-6">
           <header className="flex flex-col gap-3 rounded-xl border bg-card/70 px-4 py-4 md:flex-row md:items-center md:justify-between">
             <div>
-              <h1 className="text-2xl font-semibold tracking-tight">Catalogo da landing</h1>
+              <h1 className="text-2xl font-semibold tracking-tight">
+                Catálogo da landing
+              </h1>
               <p className="mt-1 text-sm text-muted-foreground">
-                Ative, pause e precifique os agentes e modulos exibidos no formulario.
+                Ative, pause e precifique os agentes e módulos exibidos no
+                formulário.
               </p>
             </div>
-            <Button type="button" variant="outline" onClick={() => void load(true)} disabled={isLoading}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => void load(true)}
+              disabled={isLoading}
+            >
               <RefreshCw />
               Atualizar
             </Button>
@@ -374,7 +435,7 @@ export function LandingProductsPage() {
                 <div className="rounded-xl border bg-card/70 p-4">
                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
                     <Boxes className="size-4 text-accent-cyan" />
-                    Modulos ativos
+                    Módulos ativos
                   </div>
                   <p className="mt-2 text-2xl font-semibold">
                     {grouped.modules.filter((item) => item.is_active).length}
@@ -383,37 +444,48 @@ export function LandingProductsPage() {
                 <div className="rounded-xl border bg-card/70 p-4">
                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
                     <Tags className="size-4 text-primary" />
-                    Dependencias
+                    Dependências
                   </div>
-                  <p className="mt-2 text-2xl font-semibold">{modulesWithDependencies}</p>
+                  <p className="mt-2 text-2xl font-semibold">
+                    {modulesWithDependencies}
+                  </p>
                 </div>
               </section>
 
               <section className="rounded-xl border bg-card/70 p-4">
                 <div className="flex items-center gap-2">
                   <Eye className="size-4 text-accent-cyan" />
-                  <h2 className="font-semibold">Previa da landing</h2>
+                  <h2 className="font-semibold">Prévia da landing</h2>
                 </div>
                 <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-                  {items.filter((item) => item.is_active).slice(0, 6).map((item) => (
-                    <article key={item.id} className="rounded-xl border bg-background/40 p-4">
-                      <div className="flex items-start justify-between gap-3">
-                        <div>
-                          <p className="font-semibold">{item.name}</p>
-                          <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">
-                            {item.description ?? "Sem descricao comercial."}
-                          </p>
+                  {items
+                    .filter((item) => item.is_active)
+                    .slice(0, 6)
+                    .map((item) => (
+                      <article
+                        key={item.id}
+                        className="rounded-xl border bg-background/40 p-4"
+                      >
+                        <div className="flex items-start justify-between gap-3">
+                          <div>
+                            <p className="font-semibold">{item.name}</p>
+                            <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">
+                              {item.description ?? "Sem descrição comercial."}
+                            </p>
+                          </div>
+                          <span className="rounded-md border px-2 py-1 text-xs text-accent-cyan">
+                            {categoryLabel(item.landing_form_category)}
+                          </span>
                         </div>
-                        <span className="rounded-md border px-2 py-1 text-xs text-accent-cyan">
-                          {categoryLabel(item.landing_form_category)}
-                        </span>
-                      </div>
-                      <p className="mt-3 font-semibold">{brl(item.unit_price)}/mes</p>
-                    </article>
-                  ))}
+                        <p className="mt-3 font-semibold">
+                          {brl(item.unit_price)}/mês
+                        </p>
+                      </article>
+                    ))}
                 </div>
                 <p className="mt-3 text-xs text-muted-foreground">
-                  {activeCount} itens ativos aparecem no formulario; itens pausados ficam ocultos para o lead.
+                  {activeCount} itens ativos aparecem no formulário; itens
+                  pausados ficam ocultos para o lead.
                 </p>
               </section>
               <ProductTable
@@ -424,7 +496,7 @@ export function LandingProductsPage() {
                 removeItem={(id) => void removeItem(id)}
               />
               <ProductTable
-                title="Modulos"
+                title="Módulos"
                 rows={grouped.modules}
                 updatingId={updatingId}
                 patchItem={(id, patch) => void patchItem(id, patch)}
@@ -451,7 +523,9 @@ export function LandingProductsPage() {
               <input
                 className="h-9 rounded-md border border-input bg-background px-3 font-mono text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 value={form.landing_form_code}
-                onChange={(event) => updateForm({ landing_form_code: event.target.value })}
+                onChange={(event) =>
+                  updateForm({ landing_form_code: event.target.value })
+                }
                 placeholder="ex: custom_module"
                 required
               />
@@ -462,22 +536,27 @@ export function LandingProductsPage() {
                 className="h-9 rounded-md border border-input bg-background px-3 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 value={form.landing_form_category}
                 onChange={(event) =>
-                  updateForm({ landing_form_category: event.target.value as LandingCategory })
+                  updateForm({
+                    landing_form_category: event.target
+                      .value as LandingCategory,
+                  })
                 }
               >
                 <option value="agent">Agente</option>
-                <option value="module">Modulo</option>
+                <option value="module">Módulo</option>
               </select>
             </label>
             <label className="grid gap-1.5 text-sm font-medium">
-              Preco mensal
+              Preço mensal
               <input
                 className="h-9 rounded-md border border-input bg-background px-3 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 type="number"
                 min="0"
                 step="0.01"
                 value={form.unit_price}
-                onChange={(event) => updateForm({ unit_price: event.target.value })}
+                onChange={(event) =>
+                  updateForm({ unit_price: event.target.value })
+                }
                 required
               />
             </label>
@@ -488,7 +567,9 @@ export function LandingProductsPage() {
                 type="number"
                 min="0"
                 value={form.landing_form_position}
-                onChange={(event) => updateForm({ landing_form_position: event.target.value })}
+                onChange={(event) =>
+                  updateForm({ landing_form_position: event.target.value })
+                }
                 required
               />
             </label>
@@ -505,17 +586,26 @@ export function LandingProductsPage() {
               <textarea
                 className="min-h-20 rounded-md border border-input bg-background px-3 py-2 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 value={form.description}
-                onChange={(event) => updateForm({ description: event.target.value })}
+                onChange={(event) =>
+                  updateForm({ description: event.target.value })
+                }
               />
             </label>
             {form.landing_form_category === "module" ? (
               <fieldset className="grid gap-2 rounded-md border p-3">
-                <legend className="px-1 text-sm font-medium">Aparece quando houver</legend>
+                <legend className="px-1 text-sm font-medium">
+                  Aparece quando houver
+                </legend>
                 {agentOptions.map((agent) => (
-                  <label key={agent.value} className="flex items-center gap-2 text-sm">
+                  <label
+                    key={agent.value}
+                    className="flex items-center gap-2 text-sm"
+                  >
                     <input
                       type="checkbox"
-                      checked={form.landing_form_required_agents.includes(agent.value)}
+                      checked={form.landing_form_required_agents.includes(
+                        agent.value,
+                      )}
                       onChange={() => toggleRequiredAgent(agent.value)}
                     />
                     {agent.label}
@@ -527,9 +617,11 @@ export function LandingProductsPage() {
               <input
                 type="checkbox"
                 checked={form.is_active}
-                onChange={(event) => updateForm({ is_active: event.target.checked })}
+                onChange={(event) =>
+                  updateForm({ is_active: event.target.checked })
+                }
               />
-              Ativo no formulario
+              Ativo no formulário
             </label>
             <Button type="submit" disabled={isSubmitting}>
               <PackagePlus />

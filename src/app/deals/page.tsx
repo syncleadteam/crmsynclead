@@ -5,9 +5,9 @@ export default function DealsPage() {
     <EntityList
       kind="deals"
       title="Oportunidades"
-      description="Projetos de automacao em negociacao, da qualificacao ao fechamento."
+      description="Projetos de automação em negociação, da qualificação ao fechamento."
       fields={[
-        { name: "title", label: "Titulo", required: true },
+        { name: "title", label: "Título", required: true },
         { name: "contact_id", label: "ID do contato", required: true },
         { name: "company_id", label: "ID da conta" },
         { name: "pipeline_id", label: "ID do funil", required: true },
@@ -16,7 +16,7 @@ export default function DealsPage() {
         { name: "expected_close_date", label: "Fechamento esperado" },
       ]}
       columns={[
-        { key: "title", label: "Titulo" },
+        { key: "title", label: "Título" },
         { key: "company.name", label: "Conta" },
         { key: "contact.full_name", label: "Contato" },
         { key: "stage.name", label: "Etapa" },
