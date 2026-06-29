@@ -40,7 +40,7 @@ export async function POST(request: Request, context: RouteContext) {
     return apiError("bad_request", "Nao foi possivel atualizar score.", 400, error.message);
   }
 
-  await supabase.from("integrations_state").upsert(
+  const { error: integrationError } = await supabase.from("integrations_state").upsert(
     {
       provider: parsed.data.provider,
       entity_type: "lead",
@@ -52,7 +52,16 @@ export async function POST(request: Request, context: RouteContext) {
     { onConflict: "provider,entity_type,entity_id" },
   );
 
-  await supabase.from("activities").insert({
+  if (integrationError) {
+    return apiError(
+      "bad_request",
+      "Score atualizado, mas nao foi possivel registrar estado da integracao.",
+      400,
+      integrationError.message,
+    );
+  }
+
+  const { error: activityError } = await supabase.from("activities").insert({
     entity_type: "lead",
     entity_id: id,
     actor_type: "n8n",
@@ -60,6 +69,15 @@ export async function POST(request: Request, context: RouteContext) {
     action: "lead_scored",
     metadata: { score: parsed.data.score, source: parsed.data.provider } as Json,
   });
+
+  if (activityError) {
+    return apiError(
+      "bad_request",
+      "Score atualizado, mas nao foi possivel registrar atividade.",
+      400,
+      activityError.message,
+    );
+  }
 
   return apiData(data);
 }

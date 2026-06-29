@@ -1,5 +1,6 @@
 import { createActivity, getPipelineStage } from "@/lib/api/deals";
 import { apiData, apiError, validationError } from "@/lib/api/errors";
+import { flushIntegrationEvents } from "@/lib/api/integration-dispatch";
 import { requirePermission } from "@/lib/api/permissions";
 import { convertLeadSchema } from "@/lib/api/schemas";
 
@@ -97,6 +98,8 @@ export async function POST(request: Request, context: RouteContext) {
     action: "created_from_lead",
     metadata: { lead_id: id },
   });
+
+  await flushIntegrationEvents();
 
   return apiData(deal, { status: 201 });
 }

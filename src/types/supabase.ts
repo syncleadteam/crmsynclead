@@ -96,6 +96,42 @@ export type Database = {
           },
         ]
       }
+      automations: {
+        Row: {
+          active: boolean
+          created_at: string
+          description: string
+          icon: string
+          id: string
+          name: string
+          updated_at: string
+          webhook_url: string | null
+          workflow_id: string
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          description: string
+          icon?: string
+          id?: string
+          name: string
+          updated_at?: string
+          webhook_url?: string | null
+          workflow_id: string
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          description?: string
+          icon?: string
+          id?: string
+          name?: string
+          updated_at?: string
+          webhook_url?: string | null
+          workflow_id?: string
+        }
+        Relationships: []
+      }
       companies: {
         Row: {
           created_at: string
@@ -729,6 +765,66 @@ export type Database = {
           {
             foreignKeyName: "teams_manager_id_fkey"
             columns: ["manager_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_whatsapp_connections: {
+        Row: {
+          automation_id: string
+          created_at: string
+          id: string
+          instance_api_key: string | null
+          instance_id: string
+          instance_name: string
+          last_status_checked_at: string | null
+          n8n_synced_at: string | null
+          phone_number: string | null
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          automation_id: string
+          created_at?: string
+          id?: string
+          instance_api_key?: string | null
+          instance_id: string
+          instance_name: string
+          last_status_checked_at?: string | null
+          n8n_synced_at?: string | null
+          phone_number?: string | null
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          automation_id?: string
+          created_at?: string
+          id?: string
+          instance_api_key?: string | null
+          instance_id?: string
+          instance_name?: string
+          last_status_checked_at?: string | null
+          n8n_synced_at?: string | null
+          phone_number?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_whatsapp_connections_automation_id_fkey"
+            columns: ["automation_id"]
+            isOneToOne: false
+            referencedRelation: "automations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_whatsapp_connections_user_id_fkey"
+            columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "users"
             referencedColumns: ["id"]

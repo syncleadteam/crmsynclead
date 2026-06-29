@@ -10,6 +10,7 @@ import {
   CalendarCheck,
   CircleDollarSign,
   KanbanSquare,
+  MessageCircleMore,
   Package,
   Settings,
   Users,
@@ -37,33 +38,39 @@ const navItems: Array<{
     module: "dashboard",
   },
   {
-    href: "/pipeline",
-    label: "Funil",
-    icon: KanbanSquare,
-    module: "pipelines",
-  },
-  {
     href: "/deals",
     label: "Oportunidades",
     icon: CircleDollarSign,
     module: "deals",
   },
+  {
+    href: "/sdr-conversations",
+    label: "Conversas",
+    icon: MessageCircleMore,
+    module: "automations",
+  },
   { href: "/companies", label: "Contas", icon: Building2, module: "companies" },
   { href: "/contacts", label: "Contatos", icon: Users, module: "contacts" },
+  {
+    href: "/pipeline",
+    label: "Funil",
+    icon: KanbanSquare,
+    module: "pipelines",
+  },
   { href: "/tasks", label: "Agenda", icon: CalendarCheck, module: "tasks" },
   {
     href: "/settings/landing-products",
-    label: "Catálogo da landing",
+    label: "Catálogo de Produtos",
     icon: Package,
     module: "products",
   },
   {
-    href: "/settings/integrations",
-    label: "Automações n8n",
+    href: "/whatsapp-automations",
+    label: "Automações",
     icon: Workflow,
     module: "automations",
   },
-  { href: "/settings/team", label: "Equipe", icon: Settings, module: "team" },
+  { href: "/settings", label: "Configurações", icon: Settings, module: "team" },
 ];
 
 function NavLinks({ compact = false }: { compact?: boolean }) {

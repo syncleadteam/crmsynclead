@@ -1,5 +1,6 @@
 import { createActivity } from "@/lib/api/deals";
 import { apiData, apiError, validationError } from "@/lib/api/errors";
+import { flushIntegrationEvents } from "@/lib/api/integration-dispatch";
 import { requirePermission } from "@/lib/api/permissions";
 import { listLimit, resolveOwnerId } from "@/lib/api/ownership";
 import { createTaskSchema } from "@/lib/api/schemas";
@@ -123,6 +124,8 @@ export async function POST(request: Request) {
       metadata: { task_id: data.id },
     });
   }
+
+  await flushIntegrationEvents();
 
   return apiData(withOverdue(data), { status: 201 });
 }

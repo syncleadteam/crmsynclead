@@ -1,5 +1,6 @@
 import { createActivity } from "@/lib/api/deals";
 import { apiData, apiError, validationError } from "@/lib/api/errors";
+import { flushIntegrationEvents } from "@/lib/api/integration-dispatch";
 import { requirePermission } from "@/lib/api/permissions";
 import { resolveOwnerId } from "@/lib/api/ownership";
 import { updateTaskSchema } from "@/lib/api/schemas";
@@ -110,6 +111,8 @@ export async function PATCH(request: Request, context: RouteContext) {
     });
   }
 
+  await flushIntegrationEvents();
+
   return apiData(withOverdue(data));
 }
 
@@ -134,6 +137,8 @@ export async function DELETE(request: Request, context: RouteContext) {
   if (error) {
     return apiError("bad_request", "Nao foi possivel cancelar tarefa.", 400, error.message);
   }
+
+  await flushIntegrationEvents();
 
   return apiData(withOverdue(data));
 }

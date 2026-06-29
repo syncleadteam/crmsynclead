@@ -1,4 +1,5 @@
 import { apiData, apiError, validationError } from "@/lib/api/errors";
+import { flushIntegrationEvents } from "@/lib/api/integration-dispatch";
 import { requirePermission } from "@/lib/api/permissions";
 import { resolveOwnerId } from "@/lib/api/ownership";
 import { updateLeadSchema } from "@/lib/api/schemas";
@@ -75,6 +76,8 @@ export async function PATCH(request: Request, context: RouteContext) {
   if (error) {
     return apiError("bad_request", "Nao foi possivel atualizar lead.", 400, error.message);
   }
+
+  await flushIntegrationEvents();
 
   return apiData(data);
 }

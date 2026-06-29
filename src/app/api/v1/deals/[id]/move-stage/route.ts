@@ -6,6 +6,7 @@ import {
   validateDealStatusForStage,
 } from "@/lib/api/deals";
 import { apiData, apiError, validationError } from "@/lib/api/errors";
+import { flushIntegrationEvents } from "@/lib/api/integration-dispatch";
 import { requirePermission } from "@/lib/api/permissions";
 import { moveDealStageSchema } from "@/lib/api/schemas";
 
@@ -91,6 +92,8 @@ export async function POST(request: Request, context: RouteContext) {
   if (activity.error) {
     return apiError("bad_request", "Oportunidade movida, mas a atividade nao foi registrada.", 400, activity.error.message);
   }
+
+  await flushIntegrationEvents();
 
   return apiData(data);
 }

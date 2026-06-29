@@ -1,5 +1,6 @@
 import { deriveDealStatus, getPipelineStage, validateDealStatusForStage } from "@/lib/api/deals";
 import { apiData, apiError, validationError } from "@/lib/api/errors";
+import { flushIntegrationEvents } from "@/lib/api/integration-dispatch";
 import { requirePermission } from "@/lib/api/permissions";
 import { listLimit, resolveOwnerId } from "@/lib/api/ownership";
 import { createDealSchema } from "@/lib/api/schemas";
@@ -108,6 +109,8 @@ export async function POST(request: Request) {
   if (error) {
     return apiError("bad_request", "Nao foi possivel criar oportunidade.", 400, error.message);
   }
+
+  await flushIntegrationEvents();
 
   return apiData(data, { status: 201 });
 }

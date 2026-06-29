@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Plus, RefreshCw } from "lucide-react";
-import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
+import { FormEvent, ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { AppShell } from "@/components/crm/app-nav";
@@ -24,6 +24,8 @@ type EntityListProps = {
   description: string;
   fields: Field[];
   columns: Array<{ key: string; label: string; render?: (item: LooseRecord) => string }>;
+  headerActions?: ReactNode;
+  refreshToken?: number;
 };
 
 type LooseRecord = Record<string, unknown> & { id: string };
@@ -44,6 +46,8 @@ export function EntityList({
   description,
   fields,
   columns,
+  headerActions,
+  refreshToken,
 }: EntityListProps) {
   const [items, setItems] = useState<LooseRecord[]>([]);
   const [form, setForm] = useState<Record<string, string>>({});
@@ -114,7 +118,7 @@ export function EntityList({
     queueMicrotask(() => {
       void load();
     });
-  }, [load]);
+  }, [load, refreshToken]);
 
   return (
     <AppShell>
@@ -125,15 +129,18 @@ export function EntityList({
               <h1 className="text-2xl font-semibold tracking-tight">{title}</h1>
               <p className="mt-1 text-sm text-muted-foreground">{description}</p>
             </div>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => void load(true)}
-              disabled={isLoading}
-            >
-              <RefreshCw />
-              Atualizar
-            </Button>
+            <div className="flex flex-wrap gap-2">
+              {headerActions}
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => void load(true)}
+                disabled={isLoading}
+              >
+                <RefreshCw />
+                Atualizar
+              </Button>
+            </div>
           </header>
           {error ? (
             <div className="border-b border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">

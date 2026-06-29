@@ -1,5 +1,5 @@
-import { IntegrationsPage } from "@/app/settings/integrations/integrations-page";
+import { redirect } from "next/navigation";
 
 export default function IntegrationsRoutePage() {
-  return <IntegrationsPage />;
+  redirect("/whatsapp-automations");
 }
