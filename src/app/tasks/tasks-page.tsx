@@ -11,10 +11,15 @@ type Task = {
   id: string;
   title: string;
   type: "call" | "meeting" | "email" | "follow_up" | "other";
-  related_entity_type: "lead" | "deal" | "contact" | "company";
-  related_entity_id: string;
+  related_entity_type: "lead" | "deal" | "contact" | "company" | null;
+  related_entity_id: string | null;
   due_at: string;
+  starts_at?: string | null;
+  ends_at?: string | null;
   status: "pending" | "completed" | "canceled";
+  google_calendar_id?: string | null;
+  google_calendar_html_link?: string | null;
+  google_calendar_event_status?: string | null;
   is_overdue: boolean;
   assignee?: { full_name: string | null; email: string } | null;
 };
@@ -206,7 +211,16 @@ export function TasksPage() {
                     tasks.map((task) => (
                       <tr key={task.id} className="border-b last:border-0">
                         <td className="px-4 py-3 font-medium">{task.title}</td>
-                        <td className="px-4 py-3">{task.type}</td>
+                        <td className="px-4 py-3">
+                          <div className="flex flex-wrap gap-1.5">
+                            <span>{task.type}</span>
+                            {task.google_calendar_id ? (
+                              <span className="rounded-md border border-blue-200 bg-blue-50 px-1.5 py-0.5 text-xs text-blue-700">
+                                Google Calendar
+                              </span>
+                            ) : null}
+                          </div>
+                        </td>
                         <td className="px-4 py-3">
                           {new Date(task.due_at).toLocaleString("pt-BR")}
                         </td>
@@ -254,6 +268,9 @@ export function TasksPage() {
                             })}{" "}
                             - {task.status}
                           </p>
+                          {task.google_calendar_id ? (
+                            <p className="mt-1 text-xs text-blue-700">Google Calendar</p>
+                          ) : null}
                         </div>
                       ))}
                     </div>

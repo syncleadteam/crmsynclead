@@ -10,6 +10,9 @@ type RouteContext = {
   params: Promise<{ id: string }>;
 };
 
+const taskSelect =
+  "id,title,type,related_entity_type,related_entity_id,due_at,starts_at,ends_at,status,assigned_to,external_calendar_event_id,google_calendar_id,google_calendar_html_link,google_calendar_event_status,completed_at,canceled_at,created_at,updated_at,assignee:users!tasks_assigned_to_fkey(id,email,full_name,role)";
+
 export async function GET(request: Request, context: RouteContext) {
   const auth = await requirePermission(request, "tasks", "view");
 
@@ -20,7 +23,7 @@ export async function GET(request: Request, context: RouteContext) {
   const { id } = await context.params;
   const { data, error } = await auth.context.supabase
     .from("tasks")
-    .select("id,title,type,related_entity_type,related_entity_id,due_at,status,assigned_to,external_calendar_event_id,completed_at,canceled_at,created_at,updated_at,assignee:users!tasks_assigned_to_fkey(id,email,full_name,role)")
+    .select(taskSelect)
     .eq("id", id)
     .single();
 
@@ -95,14 +98,19 @@ export async function PATCH(request: Request, context: RouteContext) {
       canceled_at: nextStatus === "canceled" ? canceledAt : null,
     })
     .eq("id", id)
-    .select("id,title,type,related_entity_type,related_entity_id,due_at,status,assigned_to,external_calendar_event_id,completed_at,canceled_at,created_at,updated_at")
+    .select(taskSelect)
     .single();
 
   if (error) {
     return apiError("bad_request", "Nao foi possivel atualizar tarefa.", 400, error.message);
   }
 
-  if (nextStatus === "completed" && current.status !== "completed") {
+  if (
+    nextStatus === "completed" &&
+    current.status !== "completed" &&
+    data.related_entity_type &&
+    data.related_entity_id
+  ) {
     await createActivity(auth.context, {
       entity_type: data.related_entity_type,
       entity_id: data.related_entity_id,
@@ -131,7 +139,7 @@ export async function DELETE(request: Request, context: RouteContext) {
       canceled_at: new Date().toISOString(),
     })
     .eq("id", id)
-    .select("id,title,type,related_entity_type,related_entity_id,due_at,status,assigned_to,external_calendar_event_id,completed_at,canceled_at,created_at,updated_at")
+    .select(taskSelect)
     .single();
 
   if (error) {

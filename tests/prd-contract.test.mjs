@@ -98,3 +98,15 @@ test("bidirectional n8n integration contract is present", () => {
   assert.match(docs, /CRM para N8N/);
   assert.match(docs, /N8N para CRM/);
 });
+
+test("google calendar events can be synchronized from n8n", () => {
+  const migration = read("supabase/migrations/20260629170000_google_calendar_tasks_sync.sql");
+  const route = read("src/app/api/v1/integrations/google-calendar/events/route.ts");
+
+  assert.match(migration, /ALTER COLUMN related_entity_type DROP NOT NULL/);
+  assert.match(migration, /google_calendar_id/);
+  assert.match(migration, /starts_at/);
+  assert.match(route, /requireN8nCallback/);
+  assert.match(route, /googleCalendarEventsSyncSchema/);
+  assert.match(route, /onConflict: "external_calendar_event_id"/);
+});

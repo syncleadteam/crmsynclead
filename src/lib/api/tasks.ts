@@ -3,9 +3,13 @@ import { apiError } from "@/lib/api/errors";
 
 export async function assertRelatedEntityExists(
   context: AuthContext,
-  entityType: "lead" | "deal" | "contact" | "company",
-  entityId: string,
+  entityType: "lead" | "deal" | "contact" | "company" | null,
+  entityId: string | null,
 ) {
+  if (!entityType || !entityId) {
+    return null;
+  }
+
   const tableByType = {
     lead: "leads",
     deal: "deals",

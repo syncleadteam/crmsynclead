@@ -261,6 +261,31 @@ export const calendarSyncSchema = z.object({
   metadata: z.record(z.string(), z.unknown()).default({}),
 });
 
+export const googleCalendarEventSyncSchema = z.object({
+  event_id: z.string().trim().min(1).max(255),
+  calendar_id: z.string().trim().min(1).max(255).default("syncleadteam@gmail.com"),
+  title: z.string().trim().min(1).max(180).default("Compromisso"),
+  description: z.string().trim().max(2000).nullable().optional(),
+  start: z.iso.datetime(),
+  end: z.iso.datetime().nullable().optional(),
+  status: z.string().trim().min(1).max(80).default("confirmed"),
+  html_link: z.url().nullable().optional(),
+  assigned_to: z.uuid().optional(),
+  related_entity_type: relatedEntityTypeSchema.nullable().optional(),
+  related_entity_id: z.uuid().nullable().optional(),
+  metadata: z.record(z.string(), z.unknown()).default({}),
+});
+
+export const googleCalendarEventsSyncSchema = z
+  .object({
+    provider: z.string().trim().min(1).max(80).default("google_calendar"),
+    events: z.array(googleCalendarEventSyncSchema).min(1).max(100),
+  })
+  .or(googleCalendarEventSyncSchema.transform((event) => ({
+    provider: "google_calendar",
+    events: [event],
+  })));
+
 export const leadScoreSchema = z.object({
   score: z.number().int().min(0).max(100),
   provider: z.string().trim().min(1).max(80).default("n8n"),

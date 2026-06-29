@@ -651,10 +651,15 @@ export type Database = {
           completed_at: string | null
           created_at: string
           due_at: string
+          ends_at: string | null
           external_calendar_event_id: string | null
+          google_calendar_event_status: string | null
+          google_calendar_html_link: string | null
+          google_calendar_id: string | null
           id: string
-          related_entity_id: string
-          related_entity_type: Database["public"]["Enums"]["activity_entity_type"]
+          related_entity_id: string | null
+          related_entity_type: Database["public"]["Enums"]["activity_entity_type"] | null
+          starts_at: string | null
           status: Database["public"]["Enums"]["task_status"]
           title: string
           type: Database["public"]["Enums"]["task_type"]
@@ -666,10 +671,15 @@ export type Database = {
           completed_at?: string | null
           created_at?: string
           due_at: string
+          ends_at?: string | null
           external_calendar_event_id?: string | null
+          google_calendar_event_status?: string | null
+          google_calendar_html_link?: string | null
+          google_calendar_id?: string | null
           id?: string
-          related_entity_id: string
-          related_entity_type: Database["public"]["Enums"]["activity_entity_type"]
+          related_entity_id?: string | null
+          related_entity_type?: Database["public"]["Enums"]["activity_entity_type"] | null
+          starts_at?: string | null
           status?: Database["public"]["Enums"]["task_status"]
           title: string
           type?: Database["public"]["Enums"]["task_type"]
@@ -681,10 +691,15 @@ export type Database = {
           completed_at?: string | null
           created_at?: string
           due_at?: string
+          ends_at?: string | null
           external_calendar_event_id?: string | null
+          google_calendar_event_status?: string | null
+          google_calendar_html_link?: string | null
+          google_calendar_id?: string | null
           id?: string
-          related_entity_id?: string
-          related_entity_type?: Database["public"]["Enums"]["activity_entity_type"]
+          related_entity_id?: string | null
+          related_entity_type?: Database["public"]["Enums"]["activity_entity_type"] | null
+          starts_at?: string | null
           status?: Database["public"]["Enums"]["task_status"]
           title?: string
           type?: Database["public"]["Enums"]["task_type"]

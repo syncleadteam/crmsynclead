@@ -14,6 +14,8 @@ type RelatedEntityType = Database["public"]["Enums"]["activity_entity_type"];
 const taskStatuses: TaskStatus[] = ["pending", "completed", "canceled"];
 const taskTypes: TaskType[] = ["call", "meeting", "email", "follow_up", "other"];
 const relatedEntityTypes: RelatedEntityType[] = ["lead", "deal", "contact", "company"];
+const taskSelect =
+  "id,title,type,related_entity_type,related_entity_id,due_at,starts_at,ends_at,status,assigned_to,external_calendar_event_id,google_calendar_id,google_calendar_html_link,google_calendar_event_status,completed_at,canceled_at,created_at,updated_at,assignee:users!tasks_assigned_to_fkey(id,email,full_name,role)";
 
 function isTaskStatus(value: string): value is TaskStatus {
   return taskStatuses.includes(value as TaskStatus);
@@ -42,7 +44,7 @@ export async function GET(request: Request) {
 
   let query = auth.context.supabase
     .from("tasks")
-    .select("id,title,type,related_entity_type,related_entity_id,due_at,status,assigned_to,external_calendar_event_id,completed_at,canceled_at,created_at,updated_at,assignee:users!tasks_assigned_to_fkey(id,email,full_name,role)")
+    .select(taskSelect)
     .order("due_at", { ascending: true })
     .limit(listLimit(request));
 
@@ -109,7 +111,7 @@ export async function POST(request: Request) {
       completed_at: status === "completed" ? new Date().toISOString() : null,
       canceled_at: status === "canceled" ? new Date().toISOString() : null,
     })
-    .select("id,title,type,related_entity_type,related_entity_id,due_at,status,assigned_to,external_calendar_event_id,completed_at,canceled_at,created_at,updated_at")
+    .select(taskSelect)
     .single();
 
   if (error) {
