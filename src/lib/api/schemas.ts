@@ -261,13 +261,18 @@ export const calendarSyncSchema = z.object({
   metadata: z.record(z.string(), z.unknown()).default({}),
 });
 
+const googleCalendarDateTimeSchema = z.union([
+  z.iso.datetime(),
+  z.iso.date().transform((date) => `${date}T00:00:00.000Z`),
+]);
+
 export const googleCalendarEventSyncSchema = z.object({
   event_id: z.string().trim().min(1).max(255),
   calendar_id: z.string().trim().min(1).max(255).default("syncleadteam@gmail.com"),
   title: z.string().trim().min(1).max(180).default("Compromisso"),
   description: z.string().trim().max(2000).nullable().optional(),
-  start: z.iso.datetime(),
-  end: z.iso.datetime().nullable().optional(),
+  start: googleCalendarDateTimeSchema,
+  end: googleCalendarDateTimeSchema.nullable().optional(),
   status: z.string().trim().min(1).max(80).default("confirmed"),
   html_link: z.url().nullable().optional(),
   assigned_to: z.uuid().optional(),
