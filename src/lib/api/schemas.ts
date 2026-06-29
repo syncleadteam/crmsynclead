@@ -262,7 +262,7 @@ export const calendarSyncSchema = z.object({
 });
 
 const googleCalendarDateTimeSchema = z.union([
-  z.iso.datetime(),
+  z.iso.datetime({ offset: true }),
   z.iso.date().transform((date) => `${date}T00:00:00.000Z`),
 ]);
 
