@@ -125,7 +125,7 @@ async function deleteRows(
   supabase: SupabaseService,
   table: "activities" | "deal_products" | "integrations_state" | "tasks",
   column: string,
-  values: string[],
+  values: readonly string[],
 ) {
   if (values.length === 0) {
     return null;
